@@ -50,6 +50,8 @@ create table tenant (
     private_gateways boolean not null
 );
 
+-- sqlite has advanced text search with https://www.sqlite.org/fts5.html
+-- but looks like it is for a full table and not specific per column, to investigate
 create index idx_tenant_name_trgm on "tenant"(name);
 
 insert into "tenant" (
