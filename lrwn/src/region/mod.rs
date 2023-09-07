@@ -7,6 +7,7 @@ use anyhow::{Context, Result};
 #[cfg(feature = "diesel")]
 use diesel::{
     backend::Backend,
+    query_builder::bind_collector::RawBytesBindCollector,
     sql_types::Text,
     {deserialize, serialize},
 };
@@ -70,18 +71,14 @@ where
 }
 
 #[cfg(feature = "diesel")]
-impl serialize::ToSql<Text, diesel::pg::Pg> for CommonName
+impl<DB> serialize::ToSql<Text, DB> for CommonName
 where
-    str: serialize::ToSql<Text, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    str: serialize::ToSql<Text, DB>,
 {
-    fn to_sql<'b>(
-        &'b self,
-        out: &mut serialize::Output<'b, '_, diesel::pg::Pg>,
-    ) -> serialize::Result {
-        <str as serialize::ToSql<Text, diesel::pg::Pg>>::to_sql(
-            &self.to_string(),
-            &mut out.reborrow(),
-        )
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
+        str::to_sql(&self.to_string(), &mut out.reborrow())
     }
 }
 
@@ -181,18 +178,14 @@ where
 }
 
 #[cfg(feature = "diesel")]
-impl serialize::ToSql<Text, diesel::pg::Pg> for Revision
+impl<DB> serialize::ToSql<Text, DB> for Revision
 where
-    str: serialize::ToSql<Text, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    str: serialize::ToSql<Text, DB>,
 {
-    fn to_sql<'b>(
-        &'b self,
-        out: &mut serialize::Output<'b, '_, diesel::pg::Pg>,
-    ) -> serialize::Result {
-        <str as serialize::ToSql<Text, diesel::pg::Pg>>::to_sql(
-            &self.to_string(),
-            &mut out.reborrow(),
-        )
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
+        str::to_sql(&self.to_string(), &mut out.reborrow())
     }
 }
 
@@ -266,18 +259,14 @@ where
 }
 
 #[cfg(feature = "diesel")]
-impl serialize::ToSql<Text, diesel::pg::Pg> for MacVersion
+impl<DB> serialize::ToSql<Text, DB> for MacVersion
 where
-    str: serialize::ToSql<Text, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    str: serialize::ToSql<Text, DB>,
 {
-    fn to_sql<'b>(
-        &'b self,
-        out: &mut serialize::Output<'b, '_, diesel::pg::Pg>,
-    ) -> serialize::Result {
-        <str as serialize::ToSql<Text, diesel::pg::Pg>>::to_sql(
-            &self.to_string(),
-            &mut out.reborrow(),
-        )
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
+        str::to_sql(&self.to_string(), &mut out.reborrow())
     }
 }
 

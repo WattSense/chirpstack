@@ -5,7 +5,12 @@ use std::time::Duration;
 
 use anyhow::Result;
 #[cfg(feature = "diesel")]
-use diesel::{backend::Backend, deserialize, serialize, sql_types::SmallInt};
+use diesel::{
+    backend::Backend,
+    query_builder::bind_collector::RawBytesBindCollector,
+    sql_types::SmallInt,
+    {deserialize, serialize},
+};
 #[cfg(feature = "serde")]
 use serde::Serialize;
 
@@ -1887,13 +1892,15 @@ where
 }
 
 #[cfg(feature = "diesel")]
-impl serialize::ToSql<SmallInt, diesel::pg::Pg> for RelayModeActivation
+impl<DB> serialize::ToSql<SmallInt, DB> for RelayModeActivation
 where
-    i16: serialize::ToSql<SmallInt, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    i16: serialize::ToSql<SmallInt, DB>,
 {
-    fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, diesel::pg::Pg>) -> serialize::Result {
+    fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         let i = self.to_u8() as i16;
-        <i16 as serialize::ToSql<SmallInt, diesel::pg::Pg>>::to_sql(&i, &mut out.reborrow())
+        i16::to_sql(&i, &mut out.reborrow())
     }
 }
 

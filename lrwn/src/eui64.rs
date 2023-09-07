@@ -3,7 +3,12 @@ use std::str::FromStr;
 
 use anyhow::Result;
 #[cfg(feature = "diesel")]
-use diesel::{backend::Backend, deserialize, serialize, sql_types::Binary};
+use diesel::{
+    backend::Backend,
+    query_builder::bind_collector::RawBytesBindCollector,
+    sql_types::Binary,
+    {deserialize, serialize},
+};
 #[cfg(feature = "serde")]
 use serde::{
     de::{self, Visitor},
@@ -134,15 +139,14 @@ where
 }
 
 #[cfg(feature = "diesel")]
-impl serialize::ToSql<Binary, diesel::pg::Pg> for EUI64
+impl<DB> serialize::ToSql<Binary, DB> for EUI64
 where
-    [u8]: serialize::ToSql<Binary, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    [u8]: serialize::ToSql<Binary, DB>,
 {
-    fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, diesel::pg::Pg>) -> serialize::Result {
-        <[u8] as serialize::ToSql<Binary, diesel::pg::Pg>>::to_sql(
-            &self.to_be_bytes(),
-            &mut out.reborrow(),
-        )
+    fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
+        <[u8]>::to_sql(&self.to_be_bytes(), &mut out.reborrow())
     }
 }
 
