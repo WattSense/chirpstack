@@ -5,7 +5,13 @@ use std::str::FromStr;
 use anyhow::{Context, Result};
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, Duration, Utc};
-use diesel::{backend::Backend, deserialize, dsl, prelude::*, serialize, sql_types::Text};
+use diesel::{
+    backend::Backend,
+    dsl,
+    prelude::*,
+    sql_types::Text,
+    {deserialize, serialize},
+};
 use tokio::task;
 use tracing::info;
 use uuid::Uuid;
@@ -54,6 +60,7 @@ where
     }
 }
 
+#[cfg(feature = "postgres")]
 impl serialize::ToSql<Text, diesel::pg::Pg> for DeviceClass
 where
     str: serialize::ToSql<Text, diesel::pg::Pg>,
@@ -66,6 +73,17 @@ where
             &self.to_string(),
             &mut out.reborrow(),
         )
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, diesel::sqlite::Sqlite> for DeviceClass {
+    fn to_sql(
+        &self,
+        out: &mut serialize::Output<'_, '_, diesel::sqlite::Sqlite>,
+    ) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 
