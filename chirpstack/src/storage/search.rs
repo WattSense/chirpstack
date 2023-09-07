@@ -38,6 +38,7 @@ pub struct SearchResult {
     pub gateway_name: Option<String>,
 }
 
+#[cfg(feature = "postgres")]
 pub async fn global_search(
     user_id: &Uuid,
     global_admin: bool,
@@ -169,6 +170,17 @@ pub async fn global_search(
         }
     })
     .await?
+}
+
+#[cfg(feature = "sqlite")]
+pub async fn global_search(
+    user_id: &Uuid,
+    global_admin: bool,
+    search: &str,
+    limit: usize,
+    offset: usize,
+) -> Result<Vec<SearchResult>, Error> {
+    Ok(Vec::new())
 }
 
 fn parse_search_query(q: &str) -> (String, HashMap<String, String>) {
