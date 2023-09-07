@@ -5,9 +5,11 @@ use std::str::FromStr;
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use diesel::backend::Backend;
-use diesel::pg::Pg;
 use diesel::sql_types::Text;
-use diesel::{deserialize, serialize};
+use diesel::{
+    query_builder::bind_collector::RawBytesBindCollector,
+    {deserialize, serialize},
+};
 use serde::{Deserialize, Serialize};
 
 mod cayenne_lpp;
@@ -40,12 +42,14 @@ where
     }
 }
 
-impl serialize::ToSql<Text, Pg> for Codec
+impl<DB> serialize::ToSql<Text, DB> for Codec
 where
-    str: serialize::ToSql<Text, Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    str: serialize::ToSql<Text, DB>,
 {
-    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Pg>) -> serialize::Result {
-        <str as serialize::ToSql<Text, Pg>>::to_sql(&self.to_string(), &mut out.reborrow())
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, DB>) -> serialize::Result {
+        str::to_sql(&self.to_string(), &mut out.reborrow())
     }
 }
 

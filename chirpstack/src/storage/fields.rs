@@ -6,7 +6,10 @@ use std::str::FromStr;
 use diesel::backend::Backend;
 use diesel::pg::Pg;
 use diesel::sql_types::{Jsonb, Text};
-use diesel::{deserialize, serialize};
+use diesel::{
+    query_builder::bind_collector::RawBytesBindCollector,
+    {deserialize, serialize},
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, AsExpression, FromSqlRow)]
@@ -147,18 +150,14 @@ where
     }
 }
 
-impl serialize::ToSql<Text, diesel::pg::Pg> for MulticastGroupSchedulingType
+impl<DB> serialize::ToSql<Text, DB> for MulticastGroupSchedulingType
 where
-    str: serialize::ToSql<Text, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    str: serialize::ToSql<Text, DB>,
 {
-    fn to_sql<'b>(
-        &'b self,
-        out: &mut serialize::Output<'b, '_, diesel::pg::Pg>,
-    ) -> serialize::Result {
-        <str as serialize::ToSql<Text, diesel::pg::Pg>>::to_sql(
-            &self.to_string(),
-            &mut out.reborrow(),
-        )
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
+        str::to_sql(&self.to_string(), &mut out.reborrow())
     }
 }
 

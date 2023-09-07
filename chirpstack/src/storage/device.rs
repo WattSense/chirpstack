@@ -5,7 +5,14 @@ use std::str::FromStr;
 use anyhow::{Context, Result};
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, Duration, Utc};
-use diesel::{backend::Backend, deserialize, dsl, prelude::*, serialize, sql_types::Text};
+use diesel::{
+    backend::Backend,
+    dsl,
+    prelude::*,
+    query_builder::bind_collector::RawBytesBindCollector,
+    sql_types::Text,
+    {deserialize, serialize},
+};
 use tokio::task;
 use tracing::info;
 use uuid::Uuid;
@@ -54,18 +61,14 @@ where
     }
 }
 
-impl serialize::ToSql<Text, diesel::pg::Pg> for DeviceClass
+impl<DB> serialize::ToSql<Text, DB> for DeviceClass
 where
-    str: serialize::ToSql<Text, diesel::pg::Pg>,
+    DB: Backend,
+    for<'a> DB: Backend<BindCollector<'a> = RawBytesBindCollector<DB>>,
+    str: serialize::ToSql<Text, DB>,
 {
-    fn to_sql<'b>(
-        &'b self,
-        out: &mut serialize::Output<'b, '_, diesel::pg::Pg>,
-    ) -> serialize::Result {
-        <str as serialize::ToSql<Text, diesel::pg::Pg>>::to_sql(
-            &self.to_string(),
-            &mut out.reborrow(),
-        )
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
+        str::to_sql(&self.to_string(), &mut out.reborrow())
     }
 }
 
