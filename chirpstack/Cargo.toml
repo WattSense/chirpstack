@@ -25,7 +25,6 @@ handlebars = "4.3"
 validator = "0.16"
 diesel = { version = "2.1", features = [
 	"chrono",
-	"postgres",
 	"r2d2",
 	"uuid",
 	"serde_json",
@@ -127,6 +126,11 @@ regex = "1.7"
 petgraph = "0.6"
 prometheus-client = "0.21"
 pin-project = "1.0"
+
+[features]
+default = ["postgres"]
+postgres = ["diesel/postgres"]
+sqlite = ["diesel/sqlite"]
 
 # Development and testing
 [dev-dependencies]
