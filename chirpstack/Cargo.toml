@@ -26,10 +26,7 @@ handlebars = "4.4"
 validator = "0.16"
 diesel = { version = "2.1", features = [
 	"chrono",
-	"postgres",
 	"r2d2",
-	"uuid",
-	"serde_json",
 	"numeric",
 	"64-column-tables",
 ] }
@@ -134,6 +131,9 @@ bytes = "1.4"
 dotenv = "0.15"
 
 [features]
+default = ["postgres"]
+postgres = ["diesel/postgres", "diesel/serde_json", "diesel/uuid", "lrwn/postgres"]
+sqlite = ["diesel/sqlite", "diesel/returning_clauses_for_sqlite_3_35", "lrwn/sqlite"]
 test-all-integrations = ["test-integration-amqp", "test-integration-kafka", "test-integration-mqtt"]
 test-integration-amqp = []
 test-integration-kafka = []
