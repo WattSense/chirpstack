@@ -20,11 +20,13 @@ pub struct SearchResult {
     pub kind: String,
     #[diesel(sql_type = diesel::sql_types::Float)]
     pub score: f32,
-    #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>)]
+    #[cfg_attr(feature = "postgres", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>))]
+    #[cfg_attr(feature = "sqlite", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>))]
     pub tenant_id: Option<Uuid>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>)]
     pub tenant_name: Option<String>,
-    #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>)]
+    #[cfg_attr(feature = "postgres", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>))]
+    #[cfg_attr(feature = "sqlite", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>))]
     pub application_id: Option<Uuid>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>)]
     pub application_name: Option<String>,
@@ -38,6 +40,7 @@ pub struct SearchResult {
     pub gateway_name: Option<String>,
 }
 
+#[cfg(feature = "postgres")]
 pub async fn global_search(
     user_id: &Uuid,
     global_admin: bool,
@@ -171,6 +174,17 @@ pub async fn global_search(
     .await?
 }
 
+#[cfg(feature = "sqlite")]
+pub async fn global_search(
+    _user_id: &Uuid,
+    _global_admin: bool,
+    _search: &str,
+    _limit: usize,
+    _offset: usize,
+) -> Result<Vec<SearchResult>, Error> {
+    unimplemented!()
+}
+
 fn parse_search_query(q: &str) -> (String, HashMap<String, String>) {
     let mut tags: HashMap<String, String> = HashMap::new();
 
@@ -243,6 +257,7 @@ pub mod test {
         }
     }
 
+    #[cfg(feature = "postgres")]
     #[tokio::test]
     async fn test_global_search() {
         let _guard = test::prepare().await;
