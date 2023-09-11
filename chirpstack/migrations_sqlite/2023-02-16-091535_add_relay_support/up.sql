@@ -53,14 +53,14 @@ alter table device_profile add column relay_overall_limit_bucket_size smallint n
 --     alter column relay_overall_limit_bucket_size drop default;
 
 create table relay_device (
-    relay_dev_eui bytea not null references device on delete cascade,
-    dev_eui bytea not null references device on delete cascade,
+    relay_dev_eui blob not null references device on delete cascade,
+    dev_eui blob not null references device on delete cascade,
     created_at timestamp with time zone not null,
     primary key (relay_dev_eui, dev_eui)
 );
 
 alter table device
-    add column join_eui bytea not null default x'00000000';
+    add column join_eui blob not null default x'00000000';
 
 -- sqlite no drop default
 -- alter table device
