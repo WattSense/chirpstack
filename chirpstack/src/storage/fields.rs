@@ -3,6 +3,7 @@ use std::fmt;
 use std::ops::{Deref, DerefMut};
 use std::str::FromStr;
 
+use super::db_adapter::DbJsonT;
 use diesel::backend::Backend;
 use diesel::sql_types::Text;
 #[cfg(feature = "sqlite")]
@@ -14,11 +15,6 @@ use diesel::{
     {deserialize, serialize},
 };
 use serde::{Deserialize, Serialize};
-
-#[cfg(feature = "postgres")]
-type DbJsonT = Jsonb;
-#[cfg(feature = "sqlite")]
-type DbJsonT = Text;
 
 #[derive(Debug, Clone, PartialEq, Eq, AsExpression, FromSqlRow)]
 #[diesel(sql_type = DbJsonT)]
