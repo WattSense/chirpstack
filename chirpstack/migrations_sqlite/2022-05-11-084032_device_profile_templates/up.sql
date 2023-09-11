@@ -27,7 +27,7 @@ create table device_profile_template (
     abp_rx1_dr_offset smallint not null,
     abp_rx2_dr smallint not null,
     abp_rx2_freq bigint not null,
-    tags jsonb not null
+    tags text not null
 );
 
 -- sqlite: changing type of a column requires a specific procedure

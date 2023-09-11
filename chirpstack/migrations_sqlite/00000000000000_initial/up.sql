@@ -104,8 +104,8 @@ create table gateway (
     altitude real not null,
     stats_interval_secs integer not null,
     tls_certificate blob,
-    tags jsonb not null,
-    properties jsonb not null
+    tags text not null,
+    properties text not null
 );
 
 create index idx_gateway_tenant_id on gateway (tenant_id);
@@ -133,7 +133,7 @@ create table application_integration (
     kind varchar(20) not null,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
-    configuration jsonb not null,
+    configuration text not null,
 
     primary key(application_id, kind)
 );
@@ -177,7 +177,7 @@ create table device_profile (
     abp_rx1_dr_offset smallint not null,
     abp_rx2_dr smallint not null,
     abp_rx2_freq bigint not null,
-    tags jsonb not null
+    tags text not null
 );
 
 create index idx_device_profile_tenant_id on device_profile (tenant_id);
@@ -206,8 +206,8 @@ create table device (
     enabled_class char(1) not null, 
     skip_fcnt_check boolean not null,
     is_disabled boolean not null,
-    tags jsonb not null,
-    variables jsonb not null
+    tags text not null,
+    variables text not null
 );
 
 create index idx_device_application_id on device (application_id);
