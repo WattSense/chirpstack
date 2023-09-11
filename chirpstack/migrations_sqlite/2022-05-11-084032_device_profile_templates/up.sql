@@ -1,7 +1,7 @@
 create table device_profile_template (
     id text primary key,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at text not null,
+    updated_at text not null,
     name varchar(100) not null,
     description text not null,
     vendor varchar(100) not null,
