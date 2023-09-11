@@ -1,6 +1,6 @@
 -- user
 create table "user" (
-    id uuid primary key,
+    id text primary key,
     external_id text null,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
@@ -39,7 +39,7 @@ insert into "user" (
 
 -- tenant
 create table tenant (
-    id uuid primary key,
+    id text primary key,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     name varchar(100) not null,
@@ -78,8 +78,8 @@ insert into "tenant" (
 
 -- tenant user
 create table tenant_user (
-    tenant_id uuid not null references tenant on delete cascade,
-    user_id uuid not null references "user" on delete cascade,
+    tenant_id text not null references tenant on delete cascade,
+    user_id text not null references "user" on delete cascade,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     is_admin boolean not null,
@@ -93,7 +93,7 @@ create index idx_tenant_user_user_id on tenant_user (user_id);
 -- gateway
 create table gateway (
     gateway_id bytea primary key,
-    tenant_id uuid not null references tenant on delete cascade,
+    tenant_id text not null references tenant on delete cascade,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     last_seen_at timestamp with time zone,
@@ -115,8 +115,8 @@ create index idx_gateway_tags on gateway (tags);
 
 -- application
 create table application (
-    id uuid primary key,
-    tenant_id uuid not null references tenant on delete cascade,
+    id text primary key,
+    tenant_id text not null references tenant on delete cascade,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     name varchar(100) not null,
@@ -129,7 +129,7 @@ create index idx_application_name_trgm on application (name);
 
 -- application integration
 create table application_integration (
-    application_id uuid not null references application on delete cascade,
+    application_id text not null references application on delete cascade,
     kind varchar(20) not null,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
@@ -140,19 +140,19 @@ create table application_integration (
 
 -- api-key
 create table api_key (
-    id uuid primary key,
+    id text primary key,
     created_at timestamp with time zone not null,
     name varchar(100) not null,
     is_admin boolean not null,
-    tenant_id uuid null references tenant on delete cascade
+    tenant_id text null references tenant on delete cascade
 );
 
 create index idx_api_key_tenant_id on api_key (tenant_id);
 
 -- device-profile
 create table device_profile (
-    id uuid primary key,
-    tenant_id uuid not null references tenant on delete cascade,
+    id text primary key,
+    tenant_id text not null references tenant on delete cascade,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     name varchar(100) not null,
@@ -187,8 +187,8 @@ create index idx_device_profile_tags on device_profile (tags);
 -- device
 create table device (
     dev_eui bytea primary key,
-    application_id uuid not null references application on delete cascade,
-    device_profile_id uuid not null references device_profile on delete cascade,
+    application_id text not null references application on delete cascade,
+    device_profile_id text not null references device_profile on delete cascade,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     last_seen_at timestamp with time zone,
@@ -228,7 +228,7 @@ create table device_keys (
 );
 
 create table device_queue_item (
-    id uuid primary key,
+    id text primary key,
     dev_eui bytea references device on delete cascade not null,
     created_at timestamp with time zone not null,
     f_port smallint not null,
@@ -246,8 +246,8 @@ create index idx_device_queue_item_timeout_after on device_queue_item (timeout_a
 
 -- multicast groups
 create table multicast_group (
-    id uuid primary key,
-    application_id uuid not null references application on delete cascade,
+    id text primary key,
+    application_id text not null references application on delete cascade,
     created_at timestamp with time zone not null,
     updated_at timestamp with time zone not null,
     name varchar(100) not null,
@@ -266,17 +266,17 @@ create index idx_multicast_group_application_id on multicast_group (application_
 create index idx_multicast_group_name_trgm on multicast_group (name);
 
 create table multicast_group_device (
-    multicast_group_id uuid not null references multicast_group on delete cascade,
+    multicast_group_id text not null references multicast_group on delete cascade,
     dev_eui bytea not null references device on delete cascade,
     created_at timestamp with time zone not null,
     primary key (multicast_group_id, dev_eui)
 );
 
 create table multicast_group_queue_item (
-    id uuid primary key,
+    id text primary key,
     created_at timestamp with time zone not null,
     scheduler_run_after timestamp with time zone not null,
-    multicast_group_id uuid not null references multicast_group on delete cascade,
+    multicast_group_id text not null references multicast_group on delete cascade,
     gateway_id bytea not null references gateway on delete cascade,
     f_cnt bigint not null,
     f_port smallint not null,
