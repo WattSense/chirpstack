@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use super::db_adapter::DbUuid;
 use crate::diesel::RunQueryDsl;
 use anyhow::{Context, Result};
 use regex::Regex;
@@ -20,11 +21,11 @@ pub struct SearchResult {
     pub kind: String,
     #[diesel(sql_type = diesel::sql_types::Float)]
     pub score: f32,
-    #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>)]
+    #[diesel(sql_type = diesel::sql_types::Nullable<DbUuid>)]
     pub tenant_id: Option<Uuid>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>)]
     pub tenant_name: Option<String>,
-    #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>)]
+    #[diesel(sql_type = diesel::sql_types::Nullable<DbUuid>)]
     pub application_id: Option<Uuid>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>)]
     pub application_name: Option<String>,
@@ -160,7 +161,7 @@ pub async fn global_search(
             .bind::<diesel::sql_types::Text, _>(&search)
             .bind::<diesel::sql_types::Text, _>(&query)
             .bind::<diesel::sql_types::Bool, _>(global_admin)
-            .bind::<diesel::sql_types::Uuid, _>(&user_id)
+            .bind::<DbUuid, _>(&user_id)
             .bind::<diesel::sql_types::BigInt, _>(limit as i64)
             .bind::<diesel::sql_types::BigInt, _>(offset as i64)
             .bind::<diesel::sql_types::Jsonb, _>(tags)
