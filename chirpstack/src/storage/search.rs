@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::db_adapter::DbUuid;
+use super::db_adapter::{DbJsonT, DbUuid};
 use crate::diesel::RunQueryDsl;
 use anyhow::{Context, Result};
 use regex::Regex;
@@ -164,7 +164,7 @@ pub async fn global_search(
             .bind::<DbUuid, _>(&user_id)
             .bind::<diesel::sql_types::BigInt, _>(limit as i64)
             .bind::<diesel::sql_types::BigInt, _>(offset as i64)
-            .bind::<diesel::sql_types::Jsonb, _>(tags)
+            .bind::<DbJsonT, _>(tags)
             .load(&mut c)?;
 
             Ok(res)
