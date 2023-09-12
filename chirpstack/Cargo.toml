@@ -26,8 +26,6 @@ validator = "0.16"
 diesel = { version = "2.1", features = [
 	"chrono",
 	"r2d2",
-	"uuid",
-	"serde_json",
 	"numeric",
 	"64-column-tables",
 ] }
@@ -129,7 +127,7 @@ pin-project = "1.0"
 
 [features]
 default = ["postgres"]
-postgres = ["diesel/postgres"]
+postgres = ["diesel/postgres", "diesel/serde_json", "diesel/uuid"]
 sqlite = ["diesel/sqlite"]
 
 # Development and testing
