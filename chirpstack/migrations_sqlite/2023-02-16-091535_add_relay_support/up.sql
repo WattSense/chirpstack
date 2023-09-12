@@ -55,7 +55,7 @@ alter table device_profile add column relay_overall_limit_bucket_size smallint n
 create table relay_device (
     relay_dev_eui blob not null references device on delete cascade,
     dev_eui blob not null references device on delete cascade,
-    created_at timestamp with time zone not null,
+    created_at datetime not null,
     primary key (relay_dev_eui, dev_eui)
 );
 

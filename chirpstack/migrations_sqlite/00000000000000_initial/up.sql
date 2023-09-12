@@ -2,8 +2,8 @@
 create table "user" (
     id text primary key,
     external_id text null,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     is_admin boolean not null,
     is_active boolean not null,
     email text not null,
@@ -40,8 +40,8 @@ insert into "user" (
 -- tenant
 create table tenant (
     id text primary key,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     name varchar(100) not null,
     description text not null,
     can_have_gateways boolean not null,
@@ -80,8 +80,8 @@ insert into "tenant" (
 create table tenant_user (
     tenant_id text not null references tenant on delete cascade,
     user_id text not null references "user" on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     is_admin boolean not null,
     is_device_admin boolean not null,
     is_gateway_admin boolean not null,
@@ -94,9 +94,9 @@ create index idx_tenant_user_user_id on tenant_user (user_id);
 create table gateway (
     gateway_id blob primary key,
     tenant_id text not null references tenant on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
-    last_seen_at timestamp with time zone,
+    created_at datetime not null,
+    updated_at datetime not null,
+    last_seen_at datetime,
     name varchar(100) not null,
     description text not null,
     latitude double precision not null,
@@ -117,8 +117,8 @@ create index idx_gateway_tags on gateway (tags);
 create table application (
     id text primary key,
     tenant_id text not null references tenant on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     name varchar(100) not null,
     description text not null,
     mqtt_tls_cert blob
@@ -131,8 +131,8 @@ create index idx_application_name_trgm on application (name);
 create table application_integration (
     application_id text not null references application on delete cascade,
     kind varchar(20) not null,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     configuration text not null,
 
     primary key(application_id, kind)
@@ -141,7 +141,7 @@ create table application_integration (
 -- api-key
 create table api_key (
     id text primary key,
-    created_at timestamp with time zone not null,
+    created_at datetime not null,
     name varchar(100) not null,
     is_admin boolean not null,
     tenant_id text null references tenant on delete cascade
@@ -153,8 +153,8 @@ create index idx_api_key_tenant_id on api_key (tenant_id);
 create table device_profile (
     id text primary key,
     tenant_id text not null references tenant on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     name varchar(100) not null,
     region varchar(10) not null,
     mac_version varchar(10) not null,
@@ -189,10 +189,10 @@ create table device (
     dev_eui blob primary key,
     application_id text not null references application on delete cascade,
     device_profile_id text not null references device_profile on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
-    last_seen_at timestamp with time zone,
-    scheduler_run_after timestamp with time zone null,
+    created_at datetime not null,
+    updated_at datetime not null,
+    last_seen_at datetime,
+    scheduler_run_after datetime null,
     name varchar(100) not null,
     description text not null,
     external_power_source boolean not null,
@@ -219,8 +219,8 @@ create index idx_device_tags on device (tags);
 
 create table device_keys (
     dev_eui blob primary key references device on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     nwk_key blob not null,
     app_key blob not null,
     dev_nonces int[] not null,
@@ -230,13 +230,13 @@ create table device_keys (
 create table device_queue_item (
     id text primary key,
     dev_eui blob references device on delete cascade not null,
-    created_at timestamp with time zone not null,
+    created_at datetime not null,
     f_port smallint not null,
     confirmed boolean not null,
     data blob not null,
     is_pending boolean not null,
     f_cnt_down bigint null,
-    timeout_after timestamp with time zone
+    timeout_after datetime
 );
 
 create index idx_device_queue_item_dev_eui on device_queue_item (dev_eui);
@@ -248,8 +248,8 @@ create index idx_device_queue_item_timeout_after on device_queue_item (timeout_a
 create table multicast_group (
     id text primary key,
     application_id text not null references application on delete cascade,
-    created_at timestamp with time zone not null,
-    updated_at timestamp with time zone not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     name varchar(100) not null,
     region varchar(10) not null,
     mc_addr blob not null,
@@ -268,14 +268,14 @@ create index idx_multicast_group_name_trgm on multicast_group (name);
 create table multicast_group_device (
     multicast_group_id text not null references multicast_group on delete cascade,
     dev_eui blob not null references device on delete cascade,
-    created_at timestamp with time zone not null,
+    created_at datetime not null,
     primary key (multicast_group_id, dev_eui)
 );
 
 create table multicast_group_queue_item (
     id text primary key,
-    created_at timestamp with time zone not null,
-    scheduler_run_after timestamp with time zone not null,
+    created_at datetime not null,
+    scheduler_run_after datetime not null,
     multicast_group_id text not null references multicast_group on delete cascade,
     gateway_id blob not null references gateway on delete cascade,
     f_cnt bigint not null,

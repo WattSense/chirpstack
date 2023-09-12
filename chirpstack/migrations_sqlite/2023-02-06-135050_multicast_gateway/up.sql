@@ -1,7 +1,7 @@
 create table multicast_group_gateway (
     multicast_group_id text not null references multicast_group on delete cascade,
     gateway_id blob not null references gateway on delete cascade,
-    created_at timestamp with time zone not null,
+    created_at datetime not null,
     primary key (multicast_group_id, gateway_id)
 );
 
