@@ -39,6 +39,7 @@ pub mod tenant;
 pub mod user;
 
 pub use db_adapter::BigDecimal;
+pub use db_adapter::Uuid;
 
 pub type PgPool = Pool<ConnectionManager<PgConnection>>;
 pub type PgPoolConnection = PooledConnection<ConnectionManager<PgConnection>>;

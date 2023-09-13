@@ -114,7 +114,7 @@ pub type DbUuid = Text;
 
 #[derive(Deserialize, Serialize, Copy, Clone, Debug, Eq, PartialEq, AsExpression, FromSqlRow)]
 #[serde(transparent)]
-#[cfg_attr(feature = "postgres", diesel(sql_type = Jsonb))]
+#[cfg_attr(feature = "postgres", diesel(sql_type = diesel::sql_types::Uuid))]
 #[cfg_attr(feature = "sqlite", diesel(sql_type = Text))]
 pub struct Uuid(uuid::Uuid);
 
@@ -130,6 +130,12 @@ impl std::convert::From<uuid::Uuid> for Uuid {
     }
 }
 
+impl std::convert::Into<uuid::Uuid> for Uuid {
+    fn into(self) -> uuid::Uuid {
+        self.0
+    }
+}
+
 impl std::ops::Deref for Uuid {
     type Target = uuid::Uuid;
     fn deref(&self) -> &Self::Target {
@@ -140,6 +146,12 @@ impl std::ops::Deref for Uuid {
 impl std::ops::DerefMut for Uuid {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
+    }
+}
+
+impl std::fmt::Display for Uuid {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", &self.0)
     }
 }
 
