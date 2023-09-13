@@ -6,6 +6,7 @@ use tracing::info;
 
 use lrwn::{AES128Key, EUI64};
 
+use super::db_adapter::DevNonces;
 use super::error::Error;
 use super::get_db_conn;
 use super::schema::device_keys;
@@ -18,7 +19,7 @@ pub struct DeviceKeys {
     pub updated_at: DateTime<Utc>,
     pub nwk_key: AES128Key,
     pub app_key: AES128Key,
-    pub dev_nonces: Vec<Option<i32>>,
+    pub dev_nonces: DevNonces,
     pub join_nonce: i32,
 }
 
@@ -38,7 +39,7 @@ impl Default for DeviceKeys {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00,
             ]),
-            dev_nonces: Vec::new(),
+            dev_nonces: Vec::new().into(),
             join_nonce: 0,
         }
     }
@@ -143,7 +144,7 @@ pub async fn reset_nonces(dev_eui: &EUI64) -> Result<DeviceKeys, Error> {
             let mut c = get_db_conn()?;
             diesel::update(device_keys::dsl::device_keys.find(&dev_eui))
                 .set((
-                    device_keys::dev_nonces.eq::<Vec<i32>>(Vec::new()),
+                    device_keys::dev_nonces.eq::<Vec<i32>>(Vec::new().into()),
                     device_keys::join_nonce.eq(0),
                 ))
                 .get_result(&mut c)

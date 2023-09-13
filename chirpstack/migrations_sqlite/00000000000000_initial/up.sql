@@ -223,7 +223,7 @@ create table device_keys (
     updated_at datetime not null,
     nwk_key blob not null,
     app_key blob not null,
-    dev_nonces int[] not null,
+    dev_nonces text not null,
     join_nonce int not null
 );
 

@@ -67,7 +67,7 @@ diesel::table! {
         updated_at -> TimestamptzSqlite,
         nwk_key -> Binary,
         app_key -> Binary,
-        dev_nonces -> Integer,
+        dev_nonces -> Text,
         join_nonce -> Integer,
     }
 }
