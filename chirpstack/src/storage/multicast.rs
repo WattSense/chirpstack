@@ -91,7 +91,7 @@ pub struct Filters {
 #[derive(Clone, Queryable, QueryableByName, Insertable, AsChangeset, Debug, PartialEq, Eq)]
 #[diesel(table_name = multicast_group_queue_item)]
 pub struct MulticastGroupQueueItem {
-    pub id: Uuid,
+    pub id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub scheduler_run_after: DateTime<Utc>,
     pub multicast_group_id: Uuid,
@@ -119,7 +119,7 @@ impl Default for MulticastGroupQueueItem {
         let now = Utc::now();
 
         MulticastGroupQueueItem {
-            id: Uuid::new_v4(),
+            id: Uuid::new_v4().into(),
             created_at: now,
             scheduler_run_after: now,
             multicast_group_id: Uuid::nil(),
@@ -533,7 +533,7 @@ pub async fn enqueue(
                                     .values(&qi)
                                     .get_result(c)
                                     .map_err(|e| Error::from_diesel(e, mg.id.to_string()))?;
-                            ids.push(qi.id);
+                            ids.push(qi.id.into());
                         }
                     }
                     "C" => {
@@ -589,7 +589,7 @@ pub async fn enqueue(
                                     .values(&qi)
                                     .get_result(c)
                                     .map_err(|e| Error::from_diesel(e, mg.id.to_string()))?;
-                            ids.push(qi.id);
+                            ids.push(qi.id.into());
 
                             if mg.class_c_scheduling_type
                                 == fields::MulticastGroupSchedulingType::DELAY
