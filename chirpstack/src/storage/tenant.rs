@@ -458,7 +458,7 @@ pub mod test {
 
         let tu = TenantUser {
             tenant_id: t.id,
-            user_id: user.id,
+            user_id: user.id.into(),
             is_admin: true,
             ..Default::default()
         };
@@ -519,7 +519,7 @@ pub mod test {
             },
             FilterTest {
                 filter: Filters {
-                    user_id: Some(user.id),
+                    user_id: Some(user.id.into()),
                     search: None,
                 },
                 ts: vec![&t],
@@ -559,7 +559,7 @@ pub mod test {
 
         let tu = TenantUser {
             tenant_id: t.id,
-            user_id: user.id,
+            user_id: user.id.into(),
             is_admin: true,
             ..Default::default()
         };
@@ -577,7 +577,7 @@ pub mod test {
 
         // get users
         let users = get_users(&t.id, 10, 0).await.unwrap();
-        assert_eq!(user.id, users[0].user_id);
+        assert_eq!(Into::<Uuid>::into(user.id), users[0].user_id);
 
         // delete
         delete_user(&t.id, &user.id).await.unwrap();

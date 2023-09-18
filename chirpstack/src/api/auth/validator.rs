@@ -2428,19 +2428,19 @@ pub mod test {
             // admin user
             ValidatorTest {
                 validators: vec![ValidateIsAdmin::new()],
-                id: AuthID::User(users[0].id),
+                id: AuthID::User(users[0].id.into()),
                 ok: true,
             },
             // inactive
             ValidatorTest {
                 validators: vec![ValidateIsAdmin::new()],
-                id: AuthID::User(users[1].id),
+                id: AuthID::User(users[1].id.into()),
                 ok: false,
             },
             // active regular user
             ValidatorTest {
                 validators: vec![ValidateIsAdmin::new()],
-                id: AuthID::User(users[2].id),
+                id: AuthID::User(users[2].id.into()),
                 ok: false,
             },
         ];
@@ -2475,13 +2475,13 @@ pub mod test {
             // active user
             ValidatorTest {
                 validators: vec![ValidateActiveUser::new()],
-                id: AuthID::User(users[0].id),
+                id: AuthID::User(users[0].id.into()),
                 ok: true,
             },
             // inactive user
             ValidatorTest {
                 validators: vec![ValidateActiveUser::new()],
-                id: AuthID::User(users[1].id),
+                id: AuthID::User(users[1].id.into()),
                 ok: false,
             },
             // api key
@@ -2523,13 +2523,13 @@ pub mod test {
             // active user
             ValidatorTest {
                 validators: vec![ValidateActiveUserOrKey::new()],
-                id: AuthID::User(users[0].id),
+                id: AuthID::User(users[0].id.into()),
                 ok: true,
             },
             // inactive user
             ValidatorTest {
                 validators: vec![ValidateActiveUserOrKey::new()],
-                id: AuthID::User(users[1].id),
+                id: AuthID::User(users[1].id.into()),
                 ok: false,
             },
             // api key
@@ -2595,7 +2595,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -2603,7 +2603,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -2618,37 +2618,37 @@ pub mod test {
                     ValidateTenantsAccess::new(Flag::Create),
                     ValidateTenantsAccess::new(Flag::List),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
                 validators: vec![ValidateTenantsAccess::new(Flag::List)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // normal user can list
             ValidatorTest {
                 validators: vec![ValidateTenantsAccess::new(Flag::List)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
                 validators: vec![ValidateTenantsAccess::new(Flag::Create)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // normal user can not create
             ValidatorTest {
                 validators: vec![ValidateTenantsAccess::new(Flag::Create)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
             // inactive user can not list
             ValidatorTest {
                 validators: vec![ValidateTenantsAccess::new(Flag::Create)],
-                id: AuthID::User(user_inactive.id),
+                id: AuthID::User(user_inactive.id.into()),
                 ok: false,
             },
         ];
@@ -2688,61 +2688,61 @@ pub mod test {
                     ValidateTenantAccess::new(Flag::Update, tenant_a.id),
                     ValidateTenantAccess::new(Flag::Delete, tenant_a.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can read
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Read, tenant_a.id)],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Read, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant admin can not update
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Update, tenant_a.id)],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: false,
             },
             // tenant admin can not delete
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Delete, tenant_a.id)],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: false,
             },
             // tenant user can not update
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Update, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // tenant user can not delete
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Delete, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // normal user can not read
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Read, tenant_a.id)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
             // normal user can not update
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Update, tenant_a.id)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
             // normal user can not delete
             ValidatorTest {
                 validators: vec![ValidateTenantAccess::new(Flag::Delete, tenant_a.id)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
         ];
@@ -2839,7 +2839,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -2847,21 +2847,21 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_user_other.id,
+            user_id: tenant_user_other.id.into(),
             ..Default::default()
         })
         .await
@@ -2875,7 +2875,7 @@ pub mod test {
                     ValidateTenantUsersAccess::new(Flag::Create, tenant_a.id),
                     ValidateTenantUsersAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can create and list
@@ -2884,31 +2884,31 @@ pub mod test {
                     ValidateTenantUsersAccess::new(Flag::Create, tenant_a.id),
                     ValidateTenantUsersAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
                 validators: vec![ValidateTenantUsersAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
                 validators: vec![ValidateTenantUsersAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // normal user can not create
             ValidatorTest {
                 validators: vec![ValidateTenantUsersAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
             // normal user can not list
             ValidatorTest {
                 validators: vec![ValidateTenantUsersAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
         ];
@@ -2951,21 +2951,21 @@ pub mod test {
             // admin user can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id),
+                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id.into()),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id),
+                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id.into()),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant user can read own user
@@ -2973,9 +2973,9 @@ pub mod test {
                 validators: vec![ValidateTenantUserAccess::new(
                     Flag::Read,
                     tenant_a.id,
-                    tenant_user.id,
+                    tenant_user.id.into(),
                 )],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not read other user
@@ -2983,28 +2983,28 @@ pub mod test {
                 validators: vec![ValidateTenantUserAccess::new(
                     Flag::Read,
                     tenant_a.id,
-                    tenant_user_other.id,
+                    tenant_user_other.id.into(),
                 )],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // tenant user can not update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id),
+                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id.into()),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // normal user can not read, update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id),
+                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id.into()),
                 ],
-                id: AuthID::User(user.id),
+                id: AuthID::User(user.id.into()),
                 ok: false,
             },
         ];
@@ -3015,9 +3015,9 @@ pub mod test {
             // admin api key can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id),
+                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id),
                 ok: true,
@@ -3028,17 +3028,17 @@ pub mod test {
                     ValidateTenantUserAccess::new(
                         Flag::Read,
                         api_key_tenant.tenant_id.unwrap(),
-                        tenant_user.id,
+                        tenant_user.id.into(),
                     ),
                     ValidateTenantUserAccess::new(
                         Flag::Update,
                         api_key_tenant.tenant_id.unwrap(),
-                        tenant_user.id,
+                        tenant_user.id.into(),
                     ),
                     ValidateTenantUserAccess::new(
                         Flag::Delete,
                         api_key_tenant.tenant_id.unwrap(),
-                        tenant_user.id,
+                        tenant_user.id.into(),
                     ),
                 ],
                 id: AuthID::Key(api_key_tenant.id),
@@ -3047,9 +3047,9 @@ pub mod test {
             // tenant api key can not read, update or delete for other tenant
             ValidatorTest {
                 validators: vec![
-                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id),
-                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id),
+                    ValidateTenantUserAccess::new(Flag::Read, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Update, tenant_a.id, tenant_user.id.into()),
+                    ValidateTenantUserAccess::new(Flag::Delete, tenant_a.id, tenant_user.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id),
                 ok: false,
@@ -3116,7 +3116,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -3124,7 +3124,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_device_admin.id,
+            user_id: tenant_device_admin.id.into(),
             is_device_admin: true,
             ..Default::default()
         })
@@ -3132,7 +3132,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_gateway_admin.id,
+            user_id: tenant_gateway_admin.id.into(),
             is_gateway_admin: true,
             ..Default::default()
         })
@@ -3140,7 +3140,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -3154,7 +3154,7 @@ pub mod test {
                     ValidateApplicationsAccess::new(Flag::Create, tenant_a.id),
                     ValidateApplicationsAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can create and list
@@ -3163,7 +3163,7 @@ pub mod test {
                     ValidateApplicationsAccess::new(Flag::Create, tenant_a.id),
                     ValidateApplicationsAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can create and list
@@ -3172,31 +3172,31 @@ pub mod test {
                     ValidateApplicationsAccess::new(Flag::Create, tenant_a.id),
                     ValidateApplicationsAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant gateway admin can list
             ValidatorTest {
                 validators: vec![ValidateApplicationsAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
                 validators: vec![ValidateApplicationsAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant gateway admin can not create
             ValidatorTest {
                 validators: vec![ValidateApplicationsAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: false,
             },
             // tenant user can not create
             ValidatorTest {
                 validators: vec![ValidateApplicationsAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // normal user can not create or list
@@ -3205,7 +3205,7 @@ pub mod test {
                     ValidateApplicationsAccess::new(Flag::Create, tenant_a.id),
                     ValidateApplicationsAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -3255,7 +3255,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin user can read, update and delete
@@ -3265,7 +3265,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can read, update and delete
@@ -3275,13 +3275,13 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
                 validators: vec![ValidateApplicationAccess::new(Flag::Read, app.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // user can not read, update or delete
@@ -3291,7 +3291,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
             // tenant user can not update or delete
@@ -3300,7 +3300,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
         ];
@@ -3374,19 +3374,19 @@ pub mod test {
                     ValidateDeviceProfileTemplatesAccess::new(Flag::Create),
                     ValidateDeviceProfileTemplatesAccess::new(Flag::List),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // user can list
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileTemplatesAccess::new(Flag::List)],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: true,
             },
             // user can not create
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileTemplatesAccess::new(Flag::Create)],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -3427,13 +3427,13 @@ pub mod test {
                     ValidateDeviceProfileTemplateAccess::new(Flag::Update),
                     ValidateDeviceProfileTemplateAccess::new(Flag::Delete),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // user can read
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileTemplateAccess::new(Flag::Read)],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: true,
             },
             // user can not update or delete
@@ -3442,7 +3442,7 @@ pub mod test {
                     ValidateDeviceProfileTemplateAccess::new(Flag::Update),
                     ValidateDeviceProfileTemplateAccess::new(Flag::Delete),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -3548,7 +3548,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -3556,7 +3556,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_device_admin.id,
+            user_id: tenant_device_admin.id.into(),
             is_device_admin: true,
             ..Default::default()
         })
@@ -3564,7 +3564,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_gateway_admin.id,
+            user_id: tenant_gateway_admin.id.into(),
             is_gateway_admin: true,
             ..Default::default()
         })
@@ -3572,7 +3572,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -3586,7 +3586,7 @@ pub mod test {
                     ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id),
                     ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin user can create and list
@@ -3595,7 +3595,7 @@ pub mod test {
                     ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id),
                     ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can create and list
@@ -3604,31 +3604,31 @@ pub mod test {
                     ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id),
                     ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant gateway admin can list
             ValidatorTest {
                 validators: vec![ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: true,
             },
             // tenant users can list
             ValidatorTest {
                 validators: vec![ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant users can not create
             ValidatorTest {
                 validators: vec![ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // tenant gateway admin can not create
             ValidatorTest {
                 validators: vec![ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: false,
             },
             // non-tenant users can not list or create
@@ -3637,7 +3637,7 @@ pub mod test {
                     ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id),
                     ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -3690,7 +3690,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can read, update and delete
@@ -3700,7 +3700,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can read, update and delete
@@ -3710,19 +3710,19 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant gateway admin can read
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileAccess::new(Flag::Read, dp.id)],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileAccess::new(Flag::Read, dp.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant gateway admin can not update or delete
@@ -3731,7 +3731,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: false,
             },
             // tenant user can not update or delete
@@ -3740,7 +3740,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
         ];
@@ -3838,7 +3838,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -3846,7 +3846,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_device_admin.id,
+            user_id: tenant_device_admin.id.into(),
             is_device_admin: true,
             ..Default::default()
         })
@@ -3854,7 +3854,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_gateway_admin.id,
+            user_id: tenant_gateway_admin.id.into(),
             is_gateway_admin: true,
             ..Default::default()
         })
@@ -3862,7 +3862,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -3875,7 +3875,7 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin user can create and list
@@ -3884,7 +3884,7 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can create and list
@@ -3893,19 +3893,19 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
                 validators: vec![ValidateDevicesAccess::new(Flag::List, app.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
                 validators: vec![ValidateDevicesAccess::new(Flag::Create, app.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other users can not create or list
@@ -3914,7 +3914,7 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -3969,7 +3969,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can read, update and delete
@@ -3979,7 +3979,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can read, update and delete
@@ -3989,13 +3989,13 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
                 validators: vec![ValidateDeviceAccess::new(Flag::Read, dev.dev_eui)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not update or delete
@@ -4004,7 +4004,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other user can not read, update and delete
@@ -4014,7 +4014,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -4089,7 +4089,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -4113,7 +4113,7 @@ pub mod test {
                     ValidateDeviceQueueAccess::new(Flag::List, dev.dev_eui),
                     ValidateDeviceQueueAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant user can create list and delete
@@ -4123,7 +4123,7 @@ pub mod test {
                     ValidateDeviceQueueAccess::new(Flag::List, dev.dev_eui),
                     ValidateDeviceQueueAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // other user can not create, list or delete
@@ -4133,7 +4133,7 @@ pub mod test {
                     ValidateDeviceQueueAccess::new(Flag::List, dev.dev_eui),
                     ValidateDeviceQueueAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -4239,7 +4239,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -4247,7 +4247,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_gateway_admin.id,
+            user_id: tenant_gateway_admin.id.into(),
             is_gateway_admin: true,
             ..Default::default()
         })
@@ -4255,7 +4255,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: tenant_a.id,
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -4269,7 +4269,7 @@ pub mod test {
                     ValidateGatewaysAccess::new(Flag::Create, tenant_a.id),
                     ValidateGatewaysAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can create and list
@@ -4278,7 +4278,7 @@ pub mod test {
                     ValidateGatewaysAccess::new(Flag::Create, tenant_a.id),
                     ValidateGatewaysAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant gateway admin can create and list
@@ -4287,19 +4287,19 @@ pub mod test {
                     ValidateGatewaysAccess::new(Flag::Create, tenant_a.id),
                     ValidateGatewaysAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
                 validators: vec![ValidateGatewaysAccess::new(Flag::List, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
                 validators: vec![ValidateGatewaysAccess::new(Flag::Create, tenant_a.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other users can not create or list
@@ -4308,7 +4308,7 @@ pub mod test {
                     ValidateGatewaysAccess::new(Flag::Create, tenant_a.id),
                     ValidateGatewaysAccess::new(Flag::List, tenant_a.id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -4355,7 +4355,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can read, update and delete
@@ -4365,7 +4365,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant gateway admin can read, update and delete
@@ -4375,13 +4375,13 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::User(tenant_gateway_admin.id),
+                id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
                 validators: vec![ValidateGatewayAccess::new(Flag::Read, gw.gateway_id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not update or delete
@@ -4390,7 +4390,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other user can not read, update or delete
@@ -4400,7 +4400,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -4498,7 +4498,7 @@ pub mod test {
 
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_admin.id,
+            user_id: tenant_admin.id.into(),
             is_admin: true,
             ..Default::default()
         })
@@ -4506,7 +4506,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_device_admin.id,
+            user_id: tenant_device_admin.id.into(),
             is_device_admin: true,
             ..Default::default()
         })
@@ -4514,7 +4514,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_gateway_admin.id,
+            user_id: tenant_gateway_admin.id.into(),
             is_gateway_admin: true,
             ..Default::default()
         })
@@ -4522,7 +4522,7 @@ pub mod test {
         .unwrap();
         tenant::add_user(tenant::TenantUser {
             tenant_id: api_key_tenant.tenant_id.unwrap(),
-            user_id: tenant_user.id,
+            user_id: tenant_user.id.into(),
             ..Default::default()
         })
         .await
@@ -4536,7 +4536,7 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can create and list
@@ -4545,7 +4545,7 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can create and list
@@ -4554,19 +4554,19 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
                 validators: vec![ValidateMulticastGroupsAccess::new(Flag::List, app.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
                 validators: vec![ValidateMulticastGroupsAccess::new(Flag::Create, app.id)],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other user can not create or list
@@ -4575,7 +4575,7 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -4630,7 +4630,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can read, update and delete
@@ -4640,7 +4640,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can read, update and delete
@@ -4650,13 +4650,13 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
                 validators: vec![ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into())],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not update or delete
@@ -4665,7 +4665,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other user can not read, update or delete
@@ -4675,7 +4675,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];
@@ -4725,7 +4725,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(user_admin.id),
+                id: AuthID::User(user_admin.id.into()),
                 ok: true,
             },
             // tenant admin can create, list and delete
@@ -4735,7 +4735,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(tenant_admin.id),
+                id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
             },
             // tenant device admin can create, list and delete
@@ -4745,7 +4745,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(tenant_device_admin.id),
+                id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
@@ -4754,7 +4754,7 @@ pub mod test {
                     Flag::List,
                     mg.id.into(),
                 )],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create or delete
@@ -4763,7 +4763,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(tenant_user.id),
+                id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // uther user can not create, list or delete
@@ -4773,7 +4773,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::User(user_active.id),
+                id: AuthID::User(user_active.id.into()),
                 ok: false,
             },
         ];

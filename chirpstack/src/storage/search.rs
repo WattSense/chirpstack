@@ -348,7 +348,7 @@ pub mod test {
         // User is tenant-user, this returns results.
         tenant::add_user(tenant::TenantUser {
             tenant_id: t.id.clone(),
-            user_id: u.id.clone(),
+            user_id: Into::<uuid::Uuid>::into(u.id).clone(),
             ..Default::default()
         })
         .await
