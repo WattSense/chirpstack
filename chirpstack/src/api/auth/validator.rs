@@ -4503,9 +4503,9 @@ pub mod test {
             // admin user can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(user_admin.id),
                 ok: true,
@@ -4513,9 +4513,9 @@ pub mod test {
             // tenant admin can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(tenant_admin.id),
                 ok: true,
@@ -4523,24 +4523,24 @@ pub mod test {
             // tenant device admin can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(tenant_device_admin.id),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
-                validators: vec![ValidateMulticastGroupAccess::new(Flag::Read, mg.id)],
+                validators: vec![ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into())],
                 id: AuthID::User(tenant_user.id),
                 ok: true,
             },
             // tenant user can not update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(tenant_user.id),
                 ok: false,
@@ -4548,9 +4548,9 @@ pub mod test {
             // other user can not read, update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(user_active.id),
                 ok: false,
@@ -4563,9 +4563,9 @@ pub mod test {
             // admin api key can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id),
                 ok: true,
@@ -4573,9 +4573,9 @@ pub mod test {
             // tenant api key can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id),
                 ok: true,
@@ -4583,9 +4583,9 @@ pub mod test {
             // other api key can not read, update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id),
-                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupAccess::new(Flag::Read, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
+                    ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::Key(api_key_other_tenant.id),
                 ok: false,
@@ -4598,9 +4598,9 @@ pub mod test {
             // admin user can create, list and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(user_admin.id),
                 ok: true,
@@ -4608,9 +4608,9 @@ pub mod test {
             // tenant admin can create, list and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(tenant_admin.id),
                 ok: true,
@@ -4618,24 +4618,27 @@ pub mod test {
             // tenant device admin can create, list and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(tenant_device_admin.id),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
-                validators: vec![ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id)],
+                validators: vec![ValidateMulticastGroupQueueAccess::new(
+                    Flag::List,
+                    mg.id.into(),
+                )],
                 id: AuthID::User(tenant_user.id),
                 ok: true,
             },
             // tenant user can not create or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(tenant_user.id),
                 ok: false,
@@ -4643,9 +4646,9 @@ pub mod test {
             // uther user can not create, list or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::User(user_active.id),
                 ok: false,
@@ -4658,9 +4661,9 @@ pub mod test {
             // admin api key can create, list and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id),
                 ok: true,
@@ -4668,9 +4671,9 @@ pub mod test {
             // tenant api key can create, list and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id),
                 ok: true,
@@ -4678,9 +4681,9 @@ pub mod test {
             // other api key can not create, list or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id),
-                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Create, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
+                    ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
                 id: AuthID::Key(api_key_other_tenant.id),
                 ok: false,
