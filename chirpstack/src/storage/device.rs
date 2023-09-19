@@ -20,7 +20,7 @@ use uuid::Uuid;
 
 use lrwn::{DevAddr, EUI64};
 
-use super::db_adapter::DbTimestamptz;
+use super::db_adapter::{DbTimestamptz, Uuid as UuidNT};
 use super::schema::{application, device, device_profile, multicast_group_device, tenant};
 use super::{error::Error, fields, get_db_conn, get_redis_conn, redis_key};
 use crate::config;
@@ -79,7 +79,7 @@ where
 pub struct Device {
     pub dev_eui: EUI64,
     pub application_id: Uuid,
-    pub device_profile_id: Uuid,
+    pub device_profile_id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub last_seen_at: Option<DateTime<Utc>>,
@@ -118,7 +118,7 @@ impl Default for Device {
         Device {
             dev_eui: EUI64::default(),
             application_id: Uuid::nil(),
-            device_profile_id: Uuid::nil(),
+            device_profile_id: Uuid::nil().into(),
             created_at: now,
             updated_at: now,
             last_seen_at: None,
@@ -148,7 +148,7 @@ pub struct DeviceListItem {
     pub dev_eui: EUI64,
     pub name: String,
     pub description: String,
-    pub device_profile_id: Uuid,
+    pub device_profile_id: UuidNT,
     pub device_profile_name: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -679,7 +679,7 @@ pub mod test {
             name: "test-dev".into(),
             dev_eui: dev_eui,
             application_id: application_id,
-            device_profile_id: device_profile_id,
+            device_profile_id: device_profile_id.into(),
             ..Default::default()
         };
 
@@ -690,8 +690,12 @@ pub mod test {
     async fn test_device() {
         let _guard = test::prepare().await;
         let dp = storage::device_profile::test::create_device_profile(None).await;
-        let mut d =
-            create_device(EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]), dp.id, None).await;
+        let mut d = create_device(
+            EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]),
+            dp.id.into(),
+            None,
+        )
+        .await;
 
         // get
         let d_get = get(&d.dev_eui).await.unwrap();
@@ -788,7 +792,12 @@ pub mod test {
     async fn test_get_with_class_b_c_queue_items() {
         let _guard = test::prepare().await;
         let dp = storage::device_profile::test::create_device_profile(None).await;
-        let d = create_device(EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]), dp.id, None).await;
+        let d = create_device(
+            EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]),
+            dp.id.into(),
+            None,
+        )
+        .await;
 
         // nothing in the queue
         let res = get_with_class_b_c_queue_items(10).await.unwrap();

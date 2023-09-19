@@ -3677,9 +3677,9 @@ pub mod test {
             // admin user can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::User(user_admin.id.into()),
                 ok: true,
@@ -3687,9 +3687,9 @@ pub mod test {
             // tenant admin can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
@@ -3697,30 +3697,30 @@ pub mod test {
             // tenant device admin can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant gateway admin can read
             ValidatorTest {
-                validators: vec![ValidateDeviceProfileAccess::new(Flag::Read, dp.id)],
+                validators: vec![ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into())],
                 id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
-                validators: vec![ValidateDeviceProfileAccess::new(Flag::Read, dp.id)],
+                validators: vec![ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into())],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant gateway admin can not update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::User(tenant_gateway_admin.id.into()),
                 ok: false,
@@ -3728,8 +3728,8 @@ pub mod test {
             // tenant user can not update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: false,
@@ -3742,9 +3742,9 @@ pub mod test {
             // admin api key can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
@@ -3752,9 +3752,9 @@ pub mod test {
             // tenant api key can read update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Read, dp_api_key_tenant.id),
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp_api_key_tenant.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp_api_key_tenant.id),
+                    ValidateDeviceProfileAccess::new(Flag::Read, dp_api_key_tenant.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp_api_key_tenant.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp_api_key_tenant.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
@@ -3762,9 +3762,9 @@ pub mod test {
             // tenant api key can not read, update or delete for other tenant
             ValidatorTest {
                 validators: vec![
-                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
-                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
+                    ValidateDeviceProfileAccess::new(Flag::Read, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Update, dp.id.into()),
+                    ValidateDeviceProfileAccess::new(Flag::Delete, dp.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
@@ -3949,7 +3949,7 @@ pub mod test {
         .await;
         let dev = device::test::create_device(
             EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]),
-            dp.id,
+            dp.id.into(),
             Some(app.id),
         )
         .await;
@@ -4095,7 +4095,7 @@ pub mod test {
         .await;
         let dev = device::test::create_device(
             EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]),
-            dp.id,
+            dp.id.into(),
             Some(app.id),
         )
         .await;

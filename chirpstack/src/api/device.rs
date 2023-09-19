@@ -62,7 +62,7 @@ impl DeviceService for Device {
         let d = device::Device {
             dev_eui,
             application_id: app_id,
-            device_profile_id: dp_id,
+            device_profile_id: dp_id.into(),
             name: req_d.name.clone(),
             description: req_d.description.clone(),
             skip_fcnt_check: req_d.skip_fcnt_check,
@@ -189,7 +189,7 @@ impl DeviceService for Device {
         let _ = device::update(device::Device {
             dev_eui,
             application_id: app_id,
-            device_profile_id: dp_id,
+            device_profile_id: dp_id.into(),
             name: req_d.name.clone(),
             description: req_d.description.clone(),
             skip_fcnt_check: req_d.skip_fcnt_check,
