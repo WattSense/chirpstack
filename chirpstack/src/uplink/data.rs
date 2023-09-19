@@ -1081,7 +1081,7 @@ impl Data {
 
         if update_dp_measurements {
             self.device_profile =
-                Some(device_profile::set_measurements(dp.id, &measurements).await?);
+                Some(device_profile::set_measurements(dp.id.into(), &measurements).await?);
         }
 
         Ok(())
