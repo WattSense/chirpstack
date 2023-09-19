@@ -667,7 +667,8 @@ pub mod test {
         let application_id = match application_id {
             Some(v) => v,
             None => {
-                let a = storage::application::test::create_application(Some(tenant_id)).await;
+                let a =
+                    storage::application::test::create_application(Some(tenant_id.into())).await;
                 a.id
             }
         };

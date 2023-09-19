@@ -11,6 +11,7 @@ use uuid::Uuid;
 
 use lrwn::EUI64;
 
+use super::db_adapter::Uuid as UuidNT;
 use super::schema::{gateway, multicast_group_gateway, tenant};
 use super::{error::Error, fields, get_db_conn};
 
@@ -18,7 +19,7 @@ use super::{error::Error, fields, get_db_conn};
 #[diesel(table_name = gateway)]
 pub struct Gateway {
     pub gateway_id: EUI64,
-    pub tenant_id: Uuid,
+    pub tenant_id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub last_seen_at: Option<DateTime<Utc>>,
@@ -44,7 +45,7 @@ impl Gateway {
 
 #[derive(Queryable, PartialEq, Debug)]
 pub struct GatewayListItem {
-    pub tenant_id: Uuid,
+    pub tenant_id: UuidNT,
     pub gateway_id: EUI64,
     pub name: String,
     pub description: String,
@@ -61,7 +62,7 @@ pub struct GatewayListItem {
 #[derive(Queryable, PartialEq, Debug)]
 pub struct GatewayMeta {
     pub gateway_id: EUI64,
-    pub tenant_id: Uuid,
+    pub tenant_id: UuidNT,
     pub latitude: f64,
     pub longitude: f64,
     pub altitude: f32,
@@ -92,7 +93,7 @@ impl Default for Gateway {
 
         Gateway {
             gateway_id: EUI64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
-            tenant_id: Uuid::nil(),
+            tenant_id: Uuid::nil().into(),
             created_at: now,
             updated_at: now,
             last_seen_at: None,
@@ -555,7 +556,7 @@ pub mod test {
             },
             FilterTest {
                 filters: Filters {
-                    tenant_id: Some(gw.tenant_id),
+                    tenant_id: Some(gw.tenant_id.into()),
                     multicast_group_id: None,
                     search: None,
                 },
