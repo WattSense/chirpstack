@@ -292,7 +292,7 @@ async fn test_downlink_scheduler() {
     run_scheduler_test(&DownlinkTest {
         name: "class-b downlink".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 10,
             data: vec![1, 2, 3],
@@ -343,7 +343,7 @@ async fn test_downlink_scheduler() {
     run_scheduler_test(&DownlinkTest {
         name: "scheduler_run_after has not yet expired".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 10,
             data: vec![1, 2, 3],
@@ -364,14 +364,14 @@ async fn test_downlink_scheduler() {
         name: "class-b downlink with more data".into(),
         device_queue_items: vec![
             device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![1, 2, 3],
                 ..Default::default()
             },
             device_queue::DeviceQueueItem {
-                id: Uuid::new_v4(),
+                id: Uuid::new_v4().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![1, 2, 3, 4],
