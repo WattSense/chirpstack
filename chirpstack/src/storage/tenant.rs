@@ -8,6 +8,7 @@ use tokio::task;
 use tracing::info;
 use uuid::Uuid;
 
+use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
 use super::schema::{tenant, tenant_user, user};
 use super::{fields, get_db_conn};
@@ -88,7 +89,7 @@ impl Default for TenantUser {
 #[derive(Queryable, PartialEq, Eq, Debug)]
 pub struct TenantUserListItem {
     pub tenant_id: Uuid,
-    pub user_id: Uuid,
+    pub user_id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub email: String,
@@ -577,7 +578,7 @@ pub mod test {
 
         // get users
         let users = get_users(&t.id, 10, 0).await.unwrap();
-        assert_eq!(Into::<Uuid>::into(user.id), users[0].user_id);
+        assert_eq!(user.id, users[0].user_id);
 
         // delete
         delete_user(&t.id, &user.id).await.unwrap();
