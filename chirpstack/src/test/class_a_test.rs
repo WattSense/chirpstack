@@ -1256,7 +1256,7 @@ async fn test_lorawan_10_uplink() {
         Test {
             name: "unconfirmed uplink with payload + ACK".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 1,
                 f_cnt_down: Some(4),
@@ -1805,7 +1805,7 @@ async fn test_lorawan_11_uplink() {
         Test {
             name: "unconfirmed uplink with payload + ACK".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 1,
                 f_cnt_down: Some(4),
@@ -2297,7 +2297,7 @@ async fn test_lorawan_10_mac_commands() {
             name: "unconfirmed uplink + device-status request downlink (FOpts) + downlink payload"
                 .into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 1,
                 data: vec![1, 2, 3, 4],
@@ -2762,7 +2762,7 @@ async fn test_lorawan_10_device_queue() {
         Test {
             name: "unconfirmed uplink + one unconfirmed downlink payload in queue".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![1, 2, 3, 4],
@@ -2840,14 +2840,14 @@ async fn test_lorawan_10_device_queue() {
             name: "unconfirmed uplink + two unconfirmed downlinks payload in queue".into(),
             device_queue_items: vec![
                 device_queue::DeviceQueueItem {
-                    id: Uuid::new_v4(),
+                    id: Uuid::new_v4().into(),
                     dev_eui: dev.dev_eui.clone(),
                     f_port: 10,
                     data: vec![1, 2, 3, 4],
                     ..Default::default()
                 },
                 device_queue::DeviceQueueItem {
-                    id: Uuid::new_v4(),
+                    id: Uuid::new_v4().into(),
                     dev_eui: dev.dev_eui.clone(),
                     f_port: 10,
                     data: vec![2, 2, 3, 4],
@@ -2929,7 +2929,7 @@ async fn test_lorawan_10_device_queue() {
         Test {
             name: "unconfirmed uplink + one confirmed downlink payload in queue".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![1, 2, 3, 4],
@@ -3007,7 +3007,7 @@ async fn test_lorawan_10_device_queue() {
         Test {
             name: "unconfirmed uplink data + downlink payload which exceeds the max payload size (for dr 0)".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![0; 52],
@@ -3043,7 +3043,7 @@ async fn test_lorawan_10_device_queue() {
         Test {
 			name: "unconfirmed uplink data + one unconfirmed downlink payload in queue (exactly max size for dr 0) + one mac command".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![0; 51],
@@ -3236,7 +3236,7 @@ async fn test_lorawan_11_device_queue() {
         Test {
             name: "unconfirmed uplink + one unconfirmed downlink payload in queue".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![1, 2, 3, 4],
@@ -3314,14 +3314,14 @@ async fn test_lorawan_11_device_queue() {
             name: "unconfirmed uplink + two unconfirmed downlinks payload in queue".into(),
             device_queue_items: vec![
                 device_queue::DeviceQueueItem {
-                    id: Uuid::new_v4(),
+                    id: Uuid::new_v4().into(),
                     dev_eui: dev.dev_eui.clone(),
                     f_port: 10,
                     data: vec![1, 2, 3, 4],
                     ..Default::default()
                 },
                 device_queue::DeviceQueueItem {
-                    id: Uuid::new_v4(),
+                    id: Uuid::new_v4().into(),
                     dev_eui: dev.dev_eui.clone(),
                     f_port: 10,
                     data: vec![2, 2, 3, 4],
@@ -3403,7 +3403,7 @@ async fn test_lorawan_11_device_queue() {
         Test {
             name: "unconfirmed uplink + one confirmed downlink payload in queue".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![1, 2, 3, 4],
@@ -3481,7 +3481,7 @@ async fn test_lorawan_11_device_queue() {
         Test {
             name: "unconfirmed uplink data + downlink payload which exceeds the max payload size (for dr 0)".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![0; 52],
@@ -3517,7 +3517,7 @@ async fn test_lorawan_11_device_queue() {
         Test {
 			name: "unconfirmed uplink data + one unconfirmed downlink payload in queue (exactly max size for dr 0) + one mac command".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 10,
                 data: vec![0; 51],
@@ -4828,7 +4828,7 @@ async fn test_lorawan_11_receive_window_selection() {
     run_test(&Test {
         name: "unconfirmed uplink with payload (rx1)".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 1,
             data: vec![1],
@@ -4897,7 +4897,7 @@ async fn test_lorawan_11_receive_window_selection() {
     run_test(&Test {
         name: "unconfirmed uplink with payload (rx2)".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 1,
             data: vec![1],
@@ -4966,7 +4966,7 @@ async fn test_lorawan_11_receive_window_selection() {
     run_test(&Test {
         name: "unconfirmed uplink with payload (rx1 + rx2)".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 1,
             data: vec![1],
@@ -5064,7 +5064,7 @@ async fn test_lorawan_11_receive_window_selection() {
     run_test(&Test {
         name: "unconfirmed uplink with payload (rx1, payload exceeds rx2 limit)".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 1,
             data: vec![0; 100],
