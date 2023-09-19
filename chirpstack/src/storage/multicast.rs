@@ -23,7 +23,7 @@ use crate::{config, gpstime::ToDateTime, gpstime::ToGpsTime};
 #[diesel(table_name = multicast_group)]
 pub struct MulticastGroup {
     pub id: UuidNT,
-    pub application_id: Uuid,
+    pub application_id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -54,7 +54,7 @@ impl Default for MulticastGroup {
 
         MulticastGroup {
             id: Uuid::new_v4().into(),
-            application_id: Uuid::nil(),
+            application_id: Uuid::nil().into(),
             created_at: now,
             updated_at: now,
             name: "".into(),
@@ -823,7 +823,7 @@ pub mod test {
             },
             FilterTest {
                 filters: Filters {
-                    application_id: Some(app.id),
+                    application_id: Some(app.id.into()),
                     search: None,
                 },
                 groups: vec![&mg],

@@ -3220,9 +3220,9 @@ pub mod test {
             // admin user can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app.id),
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Read, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::User(user_admin.id.into()),
                 ok: true,
@@ -3230,9 +3230,9 @@ pub mod test {
             // tenant admin user can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app.id),
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Read, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
@@ -3240,25 +3240,25 @@ pub mod test {
             // tenant device admin can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app.id),
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Read, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can read
             ValidatorTest {
-                validators: vec![ValidateApplicationAccess::new(Flag::Read, app.id)],
+                validators: vec![ValidateApplicationAccess::new(Flag::Read, app.id.into())],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // user can not read, update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app.id),
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Read, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::User(user_active.id.into()),
                 ok: false,
@@ -3266,8 +3266,8 @@ pub mod test {
             // tenant user can not update or delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: false,
@@ -3280,9 +3280,9 @@ pub mod test {
             // admin api key can read, update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app.id),
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Read, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
@@ -3290,9 +3290,9 @@ pub mod test {
             // tenant api key can read update and delete
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app_api_key_tenant.id),
-                    ValidateApplicationAccess::new(Flag::Update, app_api_key_tenant.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app_api_key_tenant.id),
+                    ValidateApplicationAccess::new(Flag::Read, app_api_key_tenant.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app_api_key_tenant.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app_api_key_tenant.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
@@ -3300,9 +3300,9 @@ pub mod test {
             // tenant api key can not read, update or delete app from other tentant
             ValidatorTest {
                 validators: vec![
-                    ValidateApplicationAccess::new(Flag::Read, app.id),
-                    ValidateApplicationAccess::new(Flag::Update, app.id),
-                    ValidateApplicationAccess::new(Flag::Delete, app.id),
+                    ValidateApplicationAccess::new(Flag::Read, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Update, app.id.into()),
+                    ValidateApplicationAccess::new(Flag::Delete, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
@@ -3864,8 +3864,8 @@ pub mod test {
             // admin user can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(user_admin.id.into()),
                 ok: true,
@@ -3873,8 +3873,8 @@ pub mod test {
             // tenant admin user can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
@@ -3882,29 +3882,29 @@ pub mod test {
             // tenant device admin can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
-                validators: vec![ValidateDevicesAccess::new(Flag::List, app.id)],
+                validators: vec![ValidateDevicesAccess::new(Flag::List, app.id.into())],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
-                validators: vec![ValidateDevicesAccess::new(Flag::Create, app.id)],
+                validators: vec![ValidateDevicesAccess::new(Flag::Create, app.id.into())],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other users can not create or list
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(user_active.id.into()),
                 ok: false,
@@ -3916,8 +3916,8 @@ pub mod test {
             // admin api key can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
@@ -3925,8 +3925,8 @@ pub mod test {
             // tenant api key can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
@@ -3934,8 +3934,8 @@ pub mod test {
             // tenant api key can not create or list for other tenant
             ValidatorTest {
                 validators: vec![
-                    ValidateDevicesAccess::new(Flag::Create, app.id),
-                    ValidateDevicesAccess::new(Flag::List, app.id),
+                    ValidateDevicesAccess::new(Flag::Create, app.id.into()),
+                    ValidateDevicesAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
@@ -3950,7 +3950,7 @@ pub mod test {
         let dev = device::test::create_device(
             EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]),
             dp.id.into(),
-            Some(app.id),
+            Some(app.id.into()),
         )
         .await;
 
@@ -4096,7 +4096,7 @@ pub mod test {
         let dev = device::test::create_device(
             EUI64::from_be_bytes([1, 2, 3, 4, 5, 6, 7, 8]),
             dp.id.into(),
-            Some(app.id),
+            Some(app.id.into()),
         )
         .await;
 
@@ -4538,8 +4538,8 @@ pub mod test {
             // admin user can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(user_admin.id.into()),
                 ok: true,
@@ -4547,8 +4547,8 @@ pub mod test {
             // tenant admin can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(tenant_admin.id.into()),
                 ok: true,
@@ -4556,29 +4556,35 @@ pub mod test {
             // tenant device admin can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(tenant_device_admin.id.into()),
                 ok: true,
             },
             // tenant user can list
             ValidatorTest {
-                validators: vec![ValidateMulticastGroupsAccess::new(Flag::List, app.id)],
+                validators: vec![ValidateMulticastGroupsAccess::new(
+                    Flag::List,
+                    app.id.into(),
+                )],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: true,
             },
             // tenant user can not create
             ValidatorTest {
-                validators: vec![ValidateMulticastGroupsAccess::new(Flag::Create, app.id)],
+                validators: vec![ValidateMulticastGroupsAccess::new(
+                    Flag::Create,
+                    app.id.into(),
+                )],
                 id: AuthID::User(tenant_user.id.into()),
                 ok: false,
             },
             // other user can not create or list
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::User(user_active.id.into()),
                 ok: false,
@@ -4591,8 +4597,8 @@ pub mod test {
             // admin api key can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
@@ -4600,8 +4606,8 @@ pub mod test {
             // tenant api key can create and list
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
@@ -4609,8 +4615,8 @@ pub mod test {
             // tenant api key can not create or list for other tenant
             ValidatorTest {
                 validators: vec![
-                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
-                    ValidateMulticastGroupsAccess::new(Flag::List, app.id),
+                    ValidateMulticastGroupsAccess::new(Flag::Create, app.id.into()),
+                    ValidateMulticastGroupsAccess::new(Flag::List, app.id.into()),
                 ],
                 id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
