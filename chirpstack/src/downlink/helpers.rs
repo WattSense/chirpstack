@@ -237,7 +237,7 @@ mod tests {
             },
             // is_private_down is set, first gateway matches tenant.
             Test {
-                tenant_id: Some(t.id),
+                tenant_id: Some(t.id.into()),
                 min_snr_margin: 0.0,
                 rx_info: internal::DeviceGatewayRxInfo {
                     items: vec![
@@ -260,7 +260,7 @@ mod tests {
             },
             // is_private_down is set, second gateway matches tenant.
             Test {
-                tenant_id: Some(t.id),
+                tenant_id: Some(t.id.into()),
                 min_snr_margin: 0.0,
                 rx_info: internal::DeviceGatewayRxInfo {
                     items: vec![

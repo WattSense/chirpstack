@@ -22,6 +22,7 @@ use tokio::task;
 use tracing::info;
 use uuid::Uuid;
 
+use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
 use super::get_db_conn;
 use super::schema::{application, application_integration};
@@ -30,7 +31,7 @@ use super::schema::{application, application_integration};
 #[diesel(table_name = application)]
 pub struct Application {
     pub id: Uuid,
-    pub tenant_id: Uuid,
+    pub tenant_id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -53,7 +54,7 @@ impl Default for Application {
 
         Application {
             id: Uuid::new_v4(),
-            tenant_id: Uuid::nil(),
+            tenant_id: Uuid::nil().into(),
             created_at: now,
             updated_at: now,
             name: "".into(),
@@ -644,7 +645,7 @@ pub mod test {
 
     pub async fn create_application(tenant_id: Option<Uuid>) -> Application {
         let tenant_id = match tenant_id {
-            Some(v) => v,
+            Some(v) => v.into(),
             None => {
                 let t = storage::tenant::test::create_tenant().await;
                 t.id
@@ -719,7 +720,7 @@ pub mod test {
             },
             FilterTest {
                 filters: Filters {
-                    tenant_id: Some(app.tenant_id),
+                    tenant_id: Some(app.tenant_id.into()),
                     search: None,
                 },
                 apps: vec![&app],
