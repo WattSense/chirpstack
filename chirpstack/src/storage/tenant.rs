@@ -58,7 +58,7 @@ impl Default for Tenant {
 #[diesel(table_name = tenant_user)]
 pub struct TenantUser {
     pub tenant_id: Uuid,
-    pub user_id: Uuid,
+    pub user_id: UuidNT,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub is_admin: bool,
@@ -72,7 +72,7 @@ impl Default for TenantUser {
 
         TenantUser {
             tenant_id: Uuid::nil(),
-            user_id: Uuid::nil(),
+            user_id: Uuid::nil().into(),
             created_at: now,
             updated_at: now,
             is_admin: false,
