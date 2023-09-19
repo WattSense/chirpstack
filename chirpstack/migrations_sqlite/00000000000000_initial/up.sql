@@ -1,6 +1,6 @@
 -- user
 create table "user" (
-    id text primary key,
+    id text not null primary key,
     external_id text null,
     created_at datetime not null,
     updated_at datetime not null,
@@ -39,7 +39,7 @@ insert into "user" (
 
 -- tenant
 create table tenant (
-    id text primary key,
+    id text not null primary key,
     created_at datetime not null,
     updated_at datetime not null,
     name varchar(100) not null,
@@ -92,7 +92,7 @@ create index idx_tenant_user_user_id on tenant_user (user_id);
 
 -- gateway
 create table gateway (
-    gateway_id blob primary key,
+    gateway_id blob not null primary key,
     tenant_id text not null references tenant on delete cascade,
     created_at datetime not null,
     updated_at datetime not null,
@@ -115,7 +115,7 @@ create index idx_gateway_tags on gateway (tags);
 
 -- application
 create table application (
-    id text primary key,
+    id text not null primary key,
     tenant_id text not null references tenant on delete cascade,
     created_at datetime not null,
     updated_at datetime not null,
@@ -140,7 +140,7 @@ create table application_integration (
 
 -- api-key
 create table api_key (
-    id text primary key,
+    id text not null primary key,
     created_at datetime not null,
     name varchar(100) not null,
     is_admin boolean not null,
@@ -151,7 +151,7 @@ create index idx_api_key_tenant_id on api_key (tenant_id);
 
 -- device-profile
 create table device_profile (
-    id text primary key,
+    id text not null primary key,
     tenant_id text not null references tenant on delete cascade,
     created_at datetime not null,
     updated_at datetime not null,
@@ -186,7 +186,7 @@ create index idx_device_profile_tags on device_profile (tags);
 
 -- device
 create table device (
-    dev_eui blob primary key,
+    dev_eui blob not null primary key,
     application_id text not null references application on delete cascade,
     device_profile_id text not null references device_profile on delete cascade,
     created_at datetime not null,
@@ -218,7 +218,7 @@ create index idx_device_dev_addr_trgm on device (hex(dev_addr));
 create index idx_device_tags on device (tags);
 
 create table device_keys (
-    dev_eui blob primary key references device on delete cascade,
+    dev_eui blob not null primary key references device on delete cascade,
     created_at datetime not null,
     updated_at datetime not null,
     nwk_key blob not null,
@@ -228,7 +228,7 @@ create table device_keys (
 );
 
 create table device_queue_item (
-    id text primary key,
+    id text not null primary key,
     dev_eui blob references device on delete cascade not null,
     created_at datetime not null,
     f_port smallint not null,
@@ -246,7 +246,7 @@ create index idx_device_queue_item_timeout_after on device_queue_item (timeout_a
 
 -- multicast groups
 create table multicast_group (
-    id text primary key,
+    id text not null primary key,
     application_id text not null references application on delete cascade,
     created_at datetime not null,
     updated_at datetime not null,
@@ -273,7 +273,7 @@ create table multicast_group_device (
 );
 
 create table multicast_group_queue_item (
-    id text primary key,
+    id text not null primary key,
     created_at datetime not null,
     scheduler_run_after datetime not null,
     multicast_group_id text not null references multicast_group on delete cascade,

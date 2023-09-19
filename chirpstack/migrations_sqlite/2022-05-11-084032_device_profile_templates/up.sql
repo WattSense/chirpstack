@@ -1,5 +1,5 @@
 create table device_profile_template (
-    id text primary key,
+    id text not null primary key,
     created_at datetime not null,
     updated_at datetime not null,
     name varchar(100) not null,

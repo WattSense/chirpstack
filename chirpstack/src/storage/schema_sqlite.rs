@@ -2,7 +2,7 @@
 
 diesel::table! {
     api_key (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         created_at -> TimestamptzSqlite,
         name -> Text,
         is_admin -> Bool,
@@ -12,7 +12,7 @@ diesel::table! {
 
 diesel::table! {
     application (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         tenant_id -> Text,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
@@ -34,7 +34,7 @@ diesel::table! {
 
 diesel::table! {
     device (dev_eui) {
-        dev_eui -> Nullable<Binary>,
+        dev_eui -> Binary,
         application_id -> Text,
         device_profile_id -> Text,
         created_at -> TimestamptzSqlite,
@@ -62,7 +62,7 @@ diesel::table! {
 
 diesel::table! {
     device_keys (dev_eui) {
-        dev_eui -> Nullable<Binary>,
+        dev_eui -> Binary,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
         nwk_key -> Binary,
@@ -74,7 +74,7 @@ diesel::table! {
 
 diesel::table! {
     device_profile (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         tenant_id -> Text,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
@@ -132,7 +132,7 @@ diesel::table! {
 
 diesel::table! {
     device_profile_template (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
         name -> Text,
@@ -168,7 +168,7 @@ diesel::table! {
 
 diesel::table! {
     device_queue_item (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         dev_eui -> Binary,
         created_at -> TimestamptzSqlite,
         f_port -> SmallInt,
@@ -182,7 +182,7 @@ diesel::table! {
 
 diesel::table! {
     gateway (gateway_id) {
-        gateway_id -> Nullable<Binary>,
+        gateway_id -> Binary,
         tenant_id -> Text,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
@@ -201,7 +201,7 @@ diesel::table! {
 
 diesel::table! {
     multicast_group (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         application_id -> Text,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
@@ -237,7 +237,7 @@ diesel::table! {
 
 diesel::table! {
     multicast_group_queue_item (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         created_at -> TimestamptzSqlite,
         scheduler_run_after -> TimestamptzSqlite,
         multicast_group_id -> Text,
@@ -259,7 +259,7 @@ diesel::table! {
 
 diesel::table! {
     tenant (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
         name -> Text,
@@ -286,7 +286,7 @@ diesel::table! {
 
 diesel::table! {
     user (id) {
-        id -> Nullable<Text>,
+        id -> Text,
         external_id -> Nullable<Text>,
         created_at -> TimestamptzSqlite,
         updated_at -> TimestamptzSqlite,
