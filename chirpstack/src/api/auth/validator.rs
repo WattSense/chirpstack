@@ -2354,7 +2354,7 @@ pub mod test {
             // api key
             ValidatorTest {
                 validators: vec![ValidateActiveUser::new()],
-                id: AuthID::Key(api_key.id),
+                id: AuthID::Key(api_key.id.into()),
                 ok: false,
             },
         ];
@@ -2402,7 +2402,7 @@ pub mod test {
             // api key
             ValidatorTest {
                 validators: vec![ValidateActiveUserOrKey::new()],
-                id: AuthID::Key(api_key.id),
+                id: AuthID::Key(api_key.id.into()),
                 ok: true,
             },
             // non-existing key
@@ -2530,7 +2530,7 @@ pub mod test {
                     ValidateTenantsAccess::new(Flag::Create),
                     ValidateTenantsAccess::new(Flag::List),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api can not create or list
@@ -2539,7 +2539,7 @@ pub mod test {
                     ValidateTenantsAccess::new(Flag::Create),
                     ValidateTenantsAccess::new(Flag::List),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -2624,7 +2624,7 @@ pub mod test {
                     ValidateTenantAccess::new(Flag::Update, tenant_a.id.into()),
                     ValidateTenantAccess::new(Flag::Delete, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read
@@ -2633,7 +2633,7 @@ pub mod test {
                     Flag::Read,
                     api_key_tenant.tenant_id.unwrap().into(),
                 )],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not update
@@ -2642,7 +2642,7 @@ pub mod test {
                     Flag::Update,
                     api_key_tenant.tenant_id.unwrap().into(),
                 )],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
             // tenant api key can not delete
@@ -2651,7 +2651,7 @@ pub mod test {
                     Flag::Delete,
                     api_key_tenant.tenant_id.unwrap().into(),
                 )],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -2801,7 +2801,7 @@ pub mod test {
                     ValidateTenantUsersAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateTenantUsersAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create and list
@@ -2816,7 +2816,7 @@ pub mod test {
                         api_key_tenant.tenant_id.unwrap().into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key for different tenant can not create or list
@@ -2825,7 +2825,7 @@ pub mod test {
                     ValidateTenantUsersAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateTenantUsersAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -2960,7 +2960,7 @@ pub mod test {
                         tenant_user.id.into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read, update and delete
@@ -2982,7 +2982,7 @@ pub mod test {
                         tenant_user.id.into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not read, update or delete for other tenant
@@ -3004,7 +3004,7 @@ pub mod test {
                         tenant_user.id.into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3185,7 +3185,7 @@ pub mod test {
                     ValidateApplicationsAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateApplicationsAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create and list
@@ -3200,7 +3200,7 @@ pub mod test {
                         api_key_tenant.tenant_id.unwrap().into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not create or list for other tenant
@@ -3209,7 +3209,7 @@ pub mod test {
                     ValidateApplicationsAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateApplicationsAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3284,7 +3284,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read update and delete
@@ -3294,7 +3294,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app_api_key_tenant.id),
                     ValidateApplicationAccess::new(Flag::Delete, app_api_key_tenant.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not read, update or delete app from other tentant
@@ -3304,7 +3304,7 @@ pub mod test {
                     ValidateApplicationAccess::new(Flag::Update, app.id),
                     ValidateApplicationAccess::new(Flag::Delete, app.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3379,19 +3379,19 @@ pub mod test {
                     ValidateDeviceProfileTemplatesAccess::new(Flag::Create),
                     ValidateDeviceProfileTemplatesAccess::new(Flag::List),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can list
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileTemplatesAccess::new(Flag::List)],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api can not create
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileTemplatesAccess::new(Flag::Create)],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3436,13 +3436,13 @@ pub mod test {
                     ValidateDeviceProfileTemplateAccess::new(Flag::Update, &dp.id),
                     ValidateDeviceProfileTemplateAccess::new(Flag::Delete, &dp.id),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read
             ValidatorTest {
                 validators: vec![ValidateDeviceProfileTemplateAccess::new(Flag::Read, &dp.id)],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not update or delete
@@ -3451,7 +3451,7 @@ pub mod test {
                     ValidateDeviceProfileTemplateAccess::new(Flag::Update, &dp.id),
                     ValidateDeviceProfileTemplateAccess::new(Flag::Delete, &dp.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3642,7 +3642,7 @@ pub mod test {
                     ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create and list
@@ -3657,7 +3657,7 @@ pub mod test {
                         api_key_tenant.tenant_id.unwrap().into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not create or list for other tenant
@@ -3666,7 +3666,7 @@ pub mod test {
                     ValidateDeviceProfilesAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateDeviceProfilesAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3746,7 +3746,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read update and delete
@@ -3756,7 +3756,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp_api_key_tenant.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp_api_key_tenant.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not read, update or delete for other tenant
@@ -3766,7 +3766,7 @@ pub mod test {
                     ValidateDeviceProfileAccess::new(Flag::Update, dp.id),
                     ValidateDeviceProfileAccess::new(Flag::Delete, dp.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -3919,7 +3919,7 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create and list
@@ -3928,7 +3928,7 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not create or list for other tenant
@@ -3937,7 +3937,7 @@ pub mod test {
                     ValidateDevicesAccess::new(Flag::Create, app.id),
                     ValidateDevicesAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::Key(api_key_other_tenant.id),
+                id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4021,7 +4021,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read, update and delete
@@ -4031,7 +4031,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // other api key can not read, update or delete
@@ -4041,7 +4041,7 @@ pub mod test {
                     ValidateDeviceAccess::new(Flag::Update, dev.dev_eui),
                     ValidateDeviceAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::Key(api_key_other_tenant.id),
+                id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4142,7 +4142,7 @@ pub mod test {
                     ValidateDeviceQueueAccess::new(Flag::List, dev.dev_eui),
                     ValidateDeviceQueueAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create, list and delete
@@ -4152,7 +4152,7 @@ pub mod test {
                     ValidateDeviceQueueAccess::new(Flag::List, dev.dev_eui),
                     ValidateDeviceQueueAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // api key for other tenant cna not create, list or delete
@@ -4162,7 +4162,7 @@ pub mod test {
                     ValidateDeviceQueueAccess::new(Flag::List, dev.dev_eui),
                     ValidateDeviceQueueAccess::new(Flag::Delete, dev.dev_eui),
                 ],
-                id: AuthID::Key(api_key_other_tenant.id),
+                id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4320,7 +4320,7 @@ pub mod test {
                     ValidateGatewaysAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateGatewaysAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create and list
@@ -4335,7 +4335,7 @@ pub mod test {
                         api_key_tenant.tenant_id.unwrap().into(),
                     ),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not create or list for other tenant
@@ -4344,7 +4344,7 @@ pub mod test {
                     ValidateGatewaysAccess::new(Flag::Create, tenant_a.id.into()),
                     ValidateGatewaysAccess::new(Flag::List, tenant_a.id.into()),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4419,7 +4419,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read, update and delete
@@ -4429,7 +4429,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw_api_key_tenant.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw_api_key_tenant.gateway_id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not read, update or delete gw from other tenant
@@ -4439,7 +4439,7 @@ pub mod test {
                     ValidateGatewayAccess::new(Flag::Update, gw.gateway_id),
                     ValidateGatewayAccess::new(Flag::Delete, gw.gateway_id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4594,7 +4594,7 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create and list
@@ -4603,7 +4603,7 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // tenant api key can not create or list for other tenant
@@ -4612,7 +4612,7 @@ pub mod test {
                     ValidateMulticastGroupsAccess::new(Flag::Create, app.id),
                     ValidateMulticastGroupsAccess::new(Flag::List, app.id),
                 ],
-                id: AuthID::Key(api_key_other_tenant.id),
+                id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4695,7 +4695,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can read, update and delete
@@ -4705,7 +4705,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // other api key can not read, update or delete
@@ -4715,7 +4715,7 @@ pub mod test {
                     ValidateMulticastGroupAccess::new(Flag::Update, mg.id.into()),
                     ValidateMulticastGroupAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::Key(api_key_other_tenant.id),
+                id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
             },
         ];
@@ -4793,7 +4793,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::Key(api_key_admin.id),
+                id: AuthID::Key(api_key_admin.id.into()),
                 ok: true,
             },
             // tenant api key can create, list and delete
@@ -4803,7 +4803,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::Key(api_key_tenant.id),
+                id: AuthID::Key(api_key_tenant.id.into()),
                 ok: true,
             },
             // other api key can not create, list or delete
@@ -4813,7 +4813,7 @@ pub mod test {
                     ValidateMulticastGroupQueueAccess::new(Flag::List, mg.id.into()),
                     ValidateMulticastGroupQueueAccess::new(Flag::Delete, mg.id.into()),
                 ],
-                id: AuthID::Key(api_key_other_tenant.id),
+                id: AuthID::Key(api_key_other_tenant.id.into()),
                 ok: false,
             },
         ];
