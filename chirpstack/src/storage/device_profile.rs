@@ -216,7 +216,7 @@ pub async fn create(dp: DeviceProfile) -> Result<DeviceProfile, Error> {
 
 pub async fn get(id: &Uuid) -> Result<DeviceProfile, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<DeviceProfile, Error> {
             let mut c = get_db_conn()?;
             let dp = device_profile::dsl::device_profile
@@ -314,7 +314,7 @@ pub async fn set_measurements(id: Uuid, m: &fields::Measurements) -> Result<Devi
         let m = m.clone();
         move || -> Result<DeviceProfile, Error> {
             let mut c = get_db_conn()?;
-            diesel::update(device_profile::dsl::device_profile.find(&id))
+            diesel::update(device_profile::dsl::device_profile.find(UuidNT::from(id)))
                 .set(device_profile::measurements.eq(m))
                 .get_result(&mut c)
                 .map_err(|e| Error::from_diesel(e, id.to_string()))
@@ -327,7 +327,7 @@ pub async fn set_measurements(id: Uuid, m: &fields::Measurements) -> Result<Devi
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra =
@@ -353,7 +353,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(device_profile::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(device_profile::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -398,7 +398,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(device_profile::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(device_profile::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {

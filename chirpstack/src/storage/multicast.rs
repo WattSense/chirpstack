@@ -150,7 +150,7 @@ pub async fn create(mg: MulticastGroup) -> Result<MulticastGroup, Error> {
 
 pub async fn get(id: &Uuid) -> Result<MulticastGroup, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<MulticastGroup, Error> {
             let mut c = get_db_conn()?;
             multicast_group::dsl::multicast_group
@@ -194,7 +194,7 @@ pub async fn update(mg: MulticastGroup) -> Result<MulticastGroup, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra =
@@ -220,7 +220,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(application_id) = &filters.application_id {
-                q = q.filter(multicast_group::dsl::application_id.eq(application_id));
+                q = q.filter(multicast_group::dsl::application_id.eq(UuidNT::from(application_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -262,7 +262,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(application_id) = &filters.application_id {
-                q = q.filter(multicast_group::dsl::application_id.eq(application_id));
+                q = q.filter(multicast_group::dsl::application_id.eq(UuidNT::from(application_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -288,7 +288,7 @@ pub async fn list(
 
 pub async fn add_device(group_id: &Uuid, dev_eui: &EUI64) -> Result<(), Error> {
     task::spawn_blocking({
-        let group_id = *group_id;
+        let group_id = UuidNT::from(group_id);
         let dev_eui = *dev_eui;
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
@@ -327,7 +327,7 @@ pub async fn add_device(group_id: &Uuid, dev_eui: &EUI64) -> Result<(), Error> {
 
 pub async fn remove_device(group_id: &Uuid, dev_eui: &EUI64) -> Result<(), Error> {
     task::spawn_blocking({
-        let group_id = *group_id;
+        let group_id = UuidNT::from(group_id);
         let dev_eui = *dev_eui;
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
@@ -353,7 +353,7 @@ pub async fn remove_device(group_id: &Uuid, dev_eui: &EUI64) -> Result<(), Error
 
 pub async fn add_gateway(group_id: &Uuid, gateway_id: &EUI64) -> Result<(), Error> {
     task::spawn_blocking({
-        let group_id = *group_id;
+        let group_id = UuidNT::from(group_id);
         let gateway_id = *gateway_id;
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
@@ -397,7 +397,7 @@ pub async fn add_gateway(group_id: &Uuid, gateway_id: &EUI64) -> Result<(), Erro
 
 pub async fn remove_gateway(group_id: &Uuid, gateway_id: &EUI64) -> Result<(), Error> {
     task::spawn_blocking({
-        let group_id = *group_id;
+        let group_id = UuidNT::from(group_id);
         let gateway_id = *gateway_id;
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
@@ -423,7 +423,7 @@ pub async fn remove_gateway(group_id: &Uuid, gateway_id: &EUI64) -> Result<(), E
 
 pub async fn get_dev_euis(group_id: &Uuid) -> Result<Vec<EUI64>, Error> {
     task::spawn_blocking({
-        let group_id = *group_id;
+        let group_id = UuidNT::from(group_id);
         move || -> Result<Vec<EUI64>, Error> {
             let mut c = get_db_conn()?;
             multicast_group_device::dsl::multicast_group_device
@@ -438,7 +438,7 @@ pub async fn get_dev_euis(group_id: &Uuid) -> Result<Vec<EUI64>, Error> {
 
 pub async fn get_gateway_ids(group_id: &Uuid) -> Result<Vec<EUI64>, Error> {
     task::spawn_blocking({
-        let group_id = *group_id;
+        let group_id = UuidNT::from(group_id);
         move || -> Result<Vec<EUI64>, Error> {
             let mut c = get_db_conn()?;
             multicast_group_gateway::dsl::multicast_group_gateway
@@ -627,7 +627,7 @@ pub async fn enqueue(
 
 pub async fn delete_queue_item(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(
@@ -647,7 +647,7 @@ pub async fn delete_queue_item(id: &Uuid) -> Result<(), Error> {
 
 pub async fn flush_queue(multicast_group_id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let multicast_group_id = *multicast_group_id;
+        let multicast_group_id = UuidNT::from(multicast_group_id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let _ = diesel::delete(
@@ -666,7 +666,7 @@ pub async fn flush_queue(multicast_group_id: &Uuid) -> Result<(), Error> {
 
 pub async fn get_queue(multicast_group_id: &Uuid) -> Result<Vec<MulticastGroupQueueItem>, Error> {
     task::spawn_blocking({
-        let multicast_group_id = *multicast_group_id;
+        let multicast_group_id = UuidNT::from(multicast_group_id);
         move || -> Result<Vec<MulticastGroupQueueItem>, Error> {
             let mut c = get_db_conn()?;
             multicast_group_queue_item::dsl::multicast_group_queue_item
@@ -728,7 +728,7 @@ pub mod test {
 
     pub async fn get_queue_item(id: &Uuid) -> Result<MulticastGroupQueueItem, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             move || -> Result<MulticastGroupQueueItem, Error> {
                 let mut c = get_db_conn()?;
                 multicast_group_queue_item::dsl::multicast_group_queue_item

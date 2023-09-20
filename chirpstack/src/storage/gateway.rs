@@ -313,12 +313,13 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(gateway::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(gateway::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(multicast_group_id) = &filters.multicast_group_id {
                 q = q.filter(
-                    multicast_group_gateway::dsl::multicast_group_id.eq(multicast_group_id),
+                    multicast_group_gateway::dsl::multicast_group_id
+                        .eq(UuidNT::from(multicast_group_id)),
                 );
             }
 
@@ -368,7 +369,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(gateway::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(gateway::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -384,7 +385,8 @@ pub async fn list(
 
             if let Some(multicast_group_id) = &filters.multicast_group_id {
                 q = q.filter(
-                    multicast_group_gateway::dsl::multicast_group_id.eq(multicast_group_id),
+                    multicast_group_gateway::dsl::multicast_group_id
+                        .eq(UuidNT::from(multicast_group_id)),
                 );
             }
 
@@ -427,7 +429,7 @@ pub async fn get_meta(gateway_id: &EUI64) -> Result<GatewayMeta, Error> {
 
 pub async fn get_counts_by_state(tenant_id: &Option<Uuid>) -> Result<GatewayCountsByState, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
+        let tenant_id = tenant_id.map(UuidNT::from);
         move || -> Result<GatewayCountsByState, Error> {
             let mut c = get_db_conn()?;
             let counts: GatewayCountsByState = diesel::sql_query(r#"
