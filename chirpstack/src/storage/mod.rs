@@ -3,10 +3,10 @@ use std::sync::RwLock;
 
 use anyhow::Context;
 use anyhow::Result;
-use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use tracing::info;
+
+use diesel::r2d2::{Pool, PooledConnection};
 
 use crate::config;
 
@@ -28,6 +28,8 @@ pub mod mac_command;
 pub mod metrics;
 pub mod multicast;
 pub mod passive_roaming;
+#[cfg(feature = "postgres")]
+mod postgres;
 pub mod relay;
 pub mod schema;
 #[cfg(feature = "postgres")]
@@ -35,22 +37,25 @@ mod schema_postgres;
 #[cfg(feature = "sqlite")]
 mod schema_sqlite;
 pub mod search;
+#[cfg(feature = "sqlite")]
+mod sqlite;
 pub mod tenant;
 pub mod user;
 
 pub use db_adapter::BigDecimal;
 pub use db_adapter::Uuid;
 
-pub type PgPool = Pool<ConnectionManager<PgConnection>>;
-pub type PgPoolConnection = PooledConnection<ConnectionManager<PgConnection>>;
-
 lazy_static! {
-    static ref PG_POOL: RwLock<Option<PgPool>> = RwLock::new(None);
     static ref REDIS_POOL: RwLock<Option<RedisPool>> = RwLock::new(None);
     static ref REDIS_PREFIX: RwLock<String> = RwLock::new("".to_string());
 }
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
+
+#[cfg(feature = "postgres")]
+pub use postgres::get_db_conn;
+#[cfg(feature = "sqlite")]
+pub use sqlite::get_db_conn;
 
 pub enum RedisPool {
     Client(Pool<redis::Client>),
@@ -176,16 +181,14 @@ impl RedisPipeline {
 pub async fn setup() -> Result<()> {
     let conf = config::get();
 
-    info!("Setting up PostgreSQL connection pool");
-    let pg_pool = PgPool::builder()
-        .max_size(conf.postgresql.max_open_connections)
-        .min_idle(match conf.postgresql.min_idle_connections {
-            0 => None,
-            _ => Some(conf.postgresql.min_idle_connections),
-        })
-        .build(ConnectionManager::new(&conf.postgresql.dsn))
-        .context("Setup PostgreSQL connection pool error")?;
-    set_db_pool(pg_pool);
+    #[cfg(feature = "postgres")]
+    {
+        postgres::setup(&conf.postgresql)?;
+    }
+    #[cfg(feature = "sqlite")]
+    {
+        sqlite::setup(&conf.postgresql)?;
+    }
     let mut pg_conn = get_db_conn()?;
 
     info!("Applying schema migrations");
@@ -228,20 +231,6 @@ pub async fn setup() -> Result<()> {
     Ok(())
 }
 
-pub fn get_db_pool() -> Result<PgPool> {
-    let pool_r = PG_POOL.read().unwrap();
-    let pool = pool_r
-        .as_ref()
-        .ok_or_else(|| anyhow!("PostgreSQL connection pool is not initialized (yet)"))?
-        .clone();
-    Ok(pool)
-}
-
-pub fn get_db_conn() -> Result<PgPoolConnection> {
-    let pool = get_db_pool()?;
-    Ok(pool.get()?)
-}
-
 pub fn get_redis_conn() -> Result<RedisPoolConnection> {
     let pool_r = REDIS_POOL.read().unwrap();
     let pool = pool_r
@@ -251,11 +240,6 @@ pub fn get_redis_conn() -> Result<RedisPoolConnection> {
         RedisPool::Client(v) => RedisPoolConnection::Client(v.get()?),
         RedisPool::ClusterClient(v) => RedisPoolConnection::ClusterClient(v.get()?),
     })
-}
-
-pub fn set_db_pool(p: PgPool) {
-    let mut pool_w = PG_POOL.write().unwrap();
-    *pool_w = Some(p);
 }
 
 pub fn set_redis_pool(p: RedisPool) {
