@@ -150,7 +150,7 @@ pub async fn create(mg: MulticastGroup) -> Result<MulticastGroup, Error> {
 
 pub async fn get(id: &Uuid) -> Result<MulticastGroup, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<MulticastGroup, Error> {
             let mut c = get_db_conn()?;
             multicast_group::dsl::multicast_group
@@ -194,7 +194,7 @@ pub async fn update(mg: MulticastGroup) -> Result<MulticastGroup, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra =
@@ -619,7 +619,7 @@ pub async fn enqueue(
 
 pub async fn get_queue_item(id: &Uuid) -> Result<MulticastGroupQueueItem, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<MulticastGroupQueueItem, Error> {
             let mut c = get_db_conn()?;
             multicast_group_queue_item::dsl::multicast_group_queue_item
@@ -633,7 +633,7 @@ pub async fn get_queue_item(id: &Uuid) -> Result<MulticastGroupQueueItem, Error>
 
 pub async fn delete_queue_item(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(

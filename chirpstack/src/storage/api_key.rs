@@ -66,7 +66,7 @@ pub async fn create(ak: ApiKey) -> Result<ApiKey, Error> {
 
 pub async fn get(id: &Uuid) -> Result<ApiKey, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
 
         move || -> Result<ApiKey, Error> {
             let mut c = get_db_conn()?;
@@ -81,7 +81,7 @@ pub async fn get(id: &Uuid) -> Result<ApiKey, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
 
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;

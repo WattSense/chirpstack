@@ -74,7 +74,7 @@ pub async fn enqueue_item(qi: DeviceQueueItem) -> Result<DeviceQueueItem, Error>
 
 pub async fn get_item(id: &Uuid) -> Result<DeviceQueueItem, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<DeviceQueueItem, Error> {
             let mut c = get_db_conn()?;
             let qi = device_queue_item::dsl::device_queue_item
@@ -108,7 +108,7 @@ pub async fn update_item(qi: DeviceQueueItem) -> Result<DeviceQueueItem, Error> 
 
 pub async fn delete_item(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(device_queue_item::dsl::device_queue_item.find(&id))

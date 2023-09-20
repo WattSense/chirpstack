@@ -15,6 +15,7 @@ use crate::storage::schema::{
     api_key, application, device, device_profile, gateway, multicast_group, tenant, tenant_user,
     user,
 };
+use crate::storage::Uuid as UuidNT;
 
 #[derive(Copy, Clone)]
 pub enum Flag {
@@ -93,7 +94,7 @@ impl Validator for ValidateActiveUser {
 
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -125,7 +126,7 @@ impl Validator for ValidateIsAdmin {
 
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -157,7 +158,7 @@ impl ValidateActiveUserOrKey {
 impl Validator for ValidateActiveUserOrKey {
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -173,7 +174,7 @@ impl Validator for ValidateActiveUserOrKey {
 
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -203,7 +204,7 @@ impl ValidateUsersAccess {
 impl Validator for ValidateUsersAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -232,7 +233,7 @@ impl Validator for ValidateUsersAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
                 // admin api key
@@ -263,7 +264,7 @@ impl ValidateUserAccess {
 impl Validator for ValidateUserAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let user_id = self.user_id;
             let flag = self.flag;
 
@@ -298,7 +299,7 @@ impl Validator for ValidateUserAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
                 // admin api key
@@ -335,7 +336,7 @@ impl ValidateApiKeysAccess {
 impl Validator for ValidateApiKeysAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let tenant_id = self.tenant_id;
             let flag = self.flag;
 
@@ -399,7 +400,7 @@ impl Validator for ValidateApiKeyAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
             let self_id = self.id;
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -453,7 +454,7 @@ impl ValidateTenantsAccess {
 impl Validator for ValidateTenantsAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -485,7 +486,7 @@ impl Validator for ValidateTenantsAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
                 // admin api key
@@ -516,7 +517,7 @@ impl ValidateTenantAccess {
 impl Validator for ValidateTenantAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -553,7 +554,7 @@ impl Validator for ValidateTenantAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -606,7 +607,7 @@ impl ValidateTenantUsersAccess {
 impl Validator for ValidateTenantUsersAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -650,7 +651,7 @@ impl Validator for ValidateTenantUsersAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -703,7 +704,7 @@ impl ValidateTenantUserAccess {
 impl Validator for ValidateTenantUserAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
             let user_id = self.user_id;
@@ -754,7 +755,7 @@ impl Validator for ValidateTenantUserAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -802,7 +803,7 @@ impl ValidateApplicationsAccess {
 impl Validator for ValidateApplicationsAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -852,7 +853,7 @@ impl Validator for ValidateApplicationsAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -912,7 +913,7 @@ impl ValidateApplicationAccess {
 impl Validator for ValidateApplicationAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let application_id = self.application_id;
 
@@ -967,7 +968,7 @@ impl Validator for ValidateApplicationAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let application_id = self.application_id;
 
@@ -1018,7 +1019,7 @@ impl ValidateDeviceProfileTemplatesAccess {
 impl Validator for ValidateDeviceProfileTemplatesAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -1048,7 +1049,7 @@ impl Validator for ValidateDeviceProfileTemplatesAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -1096,7 +1097,7 @@ impl ValidateDeviceProfileTemplateAccess {
 impl Validator for ValidateDeviceProfileTemplateAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -1126,7 +1127,7 @@ impl Validator for ValidateDeviceProfileTemplateAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -1170,7 +1171,7 @@ impl ValidateDeviceProfilesAccess {
 impl Validator for ValidateDeviceProfilesAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -1220,7 +1221,7 @@ impl Validator for ValidateDeviceProfilesAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -1271,7 +1272,7 @@ impl ValidateDeviceProfileAccess {
 impl Validator for ValidateDeviceProfileAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let device_profile_id = self.device_profile_id;
 
@@ -1328,7 +1329,7 @@ impl Validator for ValidateDeviceProfileAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let device_profile_id = self.device_profile_id;
 
@@ -1383,7 +1384,7 @@ impl ValidateDevicesAccess {
 impl Validator for ValidateDevicesAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let application_id = self.application_id;
 
@@ -1438,7 +1439,7 @@ impl Validator for ValidateDevicesAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let application_id = self.application_id;
 
@@ -1490,7 +1491,7 @@ impl ValidateDeviceAccess {
 impl Validator for ValidateDeviceAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let dev_eui = self.dev_eui;
 
@@ -1548,7 +1549,7 @@ impl Validator for ValidateDeviceAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let dev_eui = self.dev_eui;
 
@@ -1603,7 +1604,7 @@ impl ValidateDeviceQueueAccess {
 impl Validator for ValidateDeviceQueueAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let dev_eui = self.dev_eui;
 
@@ -1646,7 +1647,7 @@ impl Validator for ValidateDeviceQueueAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let dev_eui = self.dev_eui;
 
@@ -1701,7 +1702,7 @@ impl ValidateGatewaysAccess {
 impl Validator for ValidateGatewaysAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -1751,7 +1752,7 @@ impl Validator for ValidateGatewaysAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let tenant_id = self.tenant_id;
 
@@ -1799,7 +1800,7 @@ impl ValidateGatewayAccess {
 impl Validator for ValidateGatewayAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let gateway_id = self.gateway_id;
 
@@ -1851,7 +1852,7 @@ impl Validator for ValidateGatewayAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let gateway_id = self.gateway_id;
 
@@ -1906,7 +1907,7 @@ impl ValidateMulticastGroupsAccess {
 impl Validator for ValidateMulticastGroupsAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let application_id = self.application_id;
 
@@ -1961,7 +1962,7 @@ impl Validator for ValidateMulticastGroupsAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let application_id = self.application_id;
 
@@ -2016,7 +2017,7 @@ impl ValidateMulticastGroupAccess {
 impl Validator for ValidateMulticastGroupAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let multicast_group_id = self.multicast_group_id;
 
@@ -2075,7 +2076,7 @@ impl Validator for ValidateMulticastGroupAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let multicast_group_id = self.multicast_group_id;
 
@@ -2134,7 +2135,7 @@ impl ValidateMulticastGroupQueueAccess {
 impl Validator for ValidateMulticastGroupQueueAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let multicast_group_id = self.multicast_group_id;
 
@@ -2193,7 +2194,7 @@ impl Validator for ValidateMulticastGroupQueueAccess {
 
     async fn validate_key(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let id = *id;
+            let id = UuidNT::from(id);
             let flag = self.flag;
             let multicast_group_id = self.multicast_group_id;
 

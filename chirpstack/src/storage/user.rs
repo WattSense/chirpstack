@@ -85,7 +85,7 @@ pub async fn create(u: User) -> Result<User, Error> {
 
 pub async fn get(id: &Uuid) -> Result<User, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<User, Error> {
             let mut c = get_db_conn()?;
             let u = user::dsl::user
@@ -184,7 +184,7 @@ pub async fn update(u: User) -> Result<User, Error> {
 
 pub async fn set_password_hash(id: &Uuid, hash: &str) -> Result<User, Error> {
     let u = task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         let hash = hash.to_string();
         move || -> Result<User, Error> {
             let mut c = get_db_conn()?;
@@ -201,7 +201,7 @@ pub async fn set_password_hash(id: &Uuid, hash: &str) -> Result<User, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(user::dsl::user.find(&id))

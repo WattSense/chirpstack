@@ -342,7 +342,7 @@ pub async fn create(a: Application) -> Result<Application, Error> {
 
 pub async fn get(id: &Uuid) -> Result<Application, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<Application, Error> {
             let mut c = get_db_conn()?;
             let a = application::dsl::application
@@ -382,7 +382,7 @@ pub async fn update(a: Application) -> Result<Application, Error> {
 
 pub async fn update_mqtt_cls_cert(id: &Uuid, cert: &[u8]) -> Result<Application, Error> {
     let app = task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         let cert = cert.to_vec();
         move || -> Result<Application, Error> {
             let mut c = get_db_conn()?;
@@ -405,7 +405,7 @@ pub async fn update_mqtt_cls_cert(id: &Uuid, cert: &[u8]) -> Result<Application,
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(application::dsl::application.find(&id)).execute(&mut c)?;

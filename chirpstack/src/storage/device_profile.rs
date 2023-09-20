@@ -214,7 +214,7 @@ pub async fn create(dp: DeviceProfile) -> Result<DeviceProfile, Error> {
 
 pub async fn get(id: &Uuid) -> Result<DeviceProfile, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<DeviceProfile, Error> {
             let mut c = get_db_conn()?;
             let dp = device_profile::dsl::device_profile
@@ -324,7 +324,7 @@ pub async fn set_measurements(id: Uuid, m: &fields::Measurements) -> Result<Devi
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra =

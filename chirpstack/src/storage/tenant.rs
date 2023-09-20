@@ -118,7 +118,7 @@ pub async fn create(t: Tenant) -> Result<Tenant, Error> {
 
 pub async fn get(id: &Uuid) -> Result<Tenant, Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<Tenant, Error> {
             let mut c = get_db_conn()?;
             let t = tenant::dsl::tenant
@@ -158,7 +158,7 @@ pub async fn update(t: Tenant) -> Result<Tenant, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = *id;
+        let id = UuidNT::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(tenant::dsl::tenant.find(&id))
