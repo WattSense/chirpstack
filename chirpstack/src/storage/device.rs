@@ -423,7 +423,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(application_id) = &filters.application_id {
-                q = q.filter(device::dsl::application_id.eq(application_id));
+                q = q.filter(device::dsl::application_id.eq(UuidNT::from(application_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -431,8 +431,10 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
             }
 
             if let Some(multicast_group_id) = &filters.multicast_group_id {
-                q = q
-                    .filter(multicast_group_device::dsl::multicast_group_id.eq(multicast_group_id));
+                q = q.filter(
+                    multicast_group_device::dsl::multicast_group_id
+                        .eq(UuidNT::from(multicast_group_id)),
+                );
             }
 
             Ok(q.first(&mut c)?)
@@ -470,7 +472,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(application_id) = &filters.application_id {
-                q = q.filter(device::dsl::application_id.eq(application_id));
+                q = q.filter(device::dsl::application_id.eq(UuidNT::from(application_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -478,8 +480,10 @@ pub async fn list(
             }
 
             if let Some(multicast_group_id) = &filters.multicast_group_id {
-                q = q
-                    .filter(multicast_group_device::dsl::multicast_group_id.eq(multicast_group_id));
+                q = q.filter(
+                    multicast_group_device::dsl::multicast_group_id
+                        .eq(UuidNT::from(multicast_group_id)),
+                );
             }
 
             q.order_by(device::dsl::name)

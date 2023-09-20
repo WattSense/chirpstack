@@ -186,7 +186,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(user_id) = &filters.user_id {
-                q = q.filter(tenant_user::dsl::user_id.eq(user_id));
+                q = q.filter(tenant_user::dsl::user_id.eq(UuidNT::from(user_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -217,7 +217,7 @@ pub async fn list(limit: i64, offset: i64, filters: &Filters) -> Result<Vec<Tena
                 .into_boxed();
 
             if let Some(user_id) = &filters.user_id {
-                q = q.filter(tenant_user::dsl::user_id.eq(user_id));
+                q = q.filter(tenant_user::dsl::user_id.eq(UuidNT::from(user_id)));
             }
 
             if let Some(search) = &filters.search {

@@ -109,7 +109,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(api_key::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(api_key::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             Ok(q.first(&mut c)?)
@@ -130,7 +130,7 @@ pub async fn list(limit: i64, offset: i64, filters: &Filters) -> Result<Vec<ApiK
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(api_key::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(api_key::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             let items = q

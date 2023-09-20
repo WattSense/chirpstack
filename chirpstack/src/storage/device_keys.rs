@@ -124,7 +124,7 @@ pub async fn set_dev_nonces(dev_eui: &EUI64, nonces: &[i32]) -> Result<DeviceKey
         move || -> Result<DeviceKeys, Error> {
             let mut c = get_db_conn()?;
             diesel::update(device_keys::dsl::device_keys.find(&dev_eui))
-                .set(device_keys::dev_nonces.eq(&nonces))
+                .set(device_keys::dev_nonces.eq(DevNonces::from(nonces)))
                 .get_result(&mut c)
                 .map_err(|e| Error::from_diesel(e, dev_eui.to_string()))
         }

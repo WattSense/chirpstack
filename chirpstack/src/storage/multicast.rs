@@ -220,7 +220,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(application_id) = &filters.application_id {
-                q = q.filter(multicast_group::dsl::application_id.eq(application_id));
+                q = q.filter(multicast_group::dsl::application_id.eq(UuidNT::from(application_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -255,7 +255,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(application_id) = &filters.application_id {
-                q = q.filter(multicast_group::dsl::application_id.eq(application_id));
+                q = q.filter(multicast_group::dsl::application_id.eq(UuidNT::from(application_id)));
             }
 
             if let Some(search) = &filters.search {

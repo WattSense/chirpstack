@@ -314,12 +314,13 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(gateway::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(gateway::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(multicast_group_id) = &filters.multicast_group_id {
                 q = q.filter(
-                    multicast_group_gateway::dsl::multicast_group_id.eq(multicast_group_id),
+                    multicast_group_gateway::dsl::multicast_group_id
+                        .eq(UuidNT::from(multicast_group_id)),
                 );
             }
 
@@ -362,7 +363,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(gateway::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(gateway::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -371,7 +372,8 @@ pub async fn list(
 
             if let Some(multicast_group_id) = &filters.multicast_group_id {
                 q = q.filter(
-                    multicast_group_gateway::dsl::multicast_group_id.eq(multicast_group_id),
+                    multicast_group_gateway::dsl::multicast_group_id
+                        .eq(UuidNT::from(multicast_group_id)),
                 );
             }
 

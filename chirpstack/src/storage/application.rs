@@ -434,7 +434,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(application::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(application::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -467,7 +467,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(application::dsl::tenant_id.eq(tenant_id));
+                q = q.filter(application::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {

@@ -66,7 +66,7 @@ impl serialize::ToSql<Jsonb, Pg> for KeyValue {
 impl deserialize::FromSql<Text, Sqlite> for KeyValue {
     fn from_sql(value: <Sqlite as Backend>::RawValue<'_>) -> deserialize::Result<Self> {
         let value = <*const str>::from_sql(value)?;
-        let kv: HashMap<String, String> = serde_json::from_str(&unsafe { *value })?;
+        let kv: HashMap<String, String> = serde_json::from_str(unsafe { &*value })?;
         Ok(KeyValue(kv))
     }
 }

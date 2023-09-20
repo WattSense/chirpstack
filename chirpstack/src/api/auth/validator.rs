@@ -265,7 +265,7 @@ impl Validator for ValidateUserAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
             let id = UuidNT::from(id);
-            let user_id = self.user_id;
+            let user_id = UuidNT::from(self.user_id);
             let flag = self.flag;
 
             move || {
@@ -280,7 +280,11 @@ impl Validator for ValidateUserAccess {
                     // admin user
                     // user itself
                     Flag::Read | Flag::UpdateProfile => {
-                        q = q.filter(user::dsl::is_admin.eq(true).or(user::dsl::id.eq(&user_id)));
+                        q = q.filter(
+                            user::dsl::is_admin
+                                .eq(true)
+                                .or(user::dsl::id.eq(UuidNT::from(user_id))),
+                        );
                     }
                     // admin user
                     Flag::Update | Flag::Delete => {
@@ -337,7 +341,7 @@ impl Validator for ValidateApiKeysAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
             let id = UuidNT::from(id);
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
             let flag = self.flag;
 
             move || -> Result<i64, Error> {
@@ -356,7 +360,7 @@ impl Validator for ValidateApiKeysAccess {
                         q = q.filter(
                             user::dsl::is_admin.eq(true).or(tenant_user::dsl::is_admin
                                 .eq(true)
-                                .and(tenant::dsl::id.eq(&tenant_id))),
+                                .and(tenant::dsl::id.eq(tenant_id))),
                         );
                     }
                     // admin user
@@ -399,7 +403,7 @@ impl ValidateApiKeyAccess {
 impl Validator for ValidateApiKeyAccess {
     async fn validate_user(&self, id: &Uuid) -> Result<i64, Error> {
         task::spawn_blocking({
-            let self_id = self.id;
+            let self_id = UuidNT::from(self.id);
             let id = UuidNT::from(id);
             let flag = self.flag;
 
@@ -411,7 +415,7 @@ impl Validator for ValidateApiKeyAccess {
                     .left_join(
                         tenant_user::table.left_join(tenant::table.left_join(api_key::table)),
                     )
-                    .filter(user::dsl::id.eq(&id).and(user::dsl::is_active.eq(true)))
+                    .filter(user::dsl::id.eq(id).and(user::dsl::is_active.eq(true)))
                     .into_boxed();
 
                 match flag {
@@ -421,7 +425,7 @@ impl Validator for ValidateApiKeyAccess {
                         q = q.filter(
                             user::dsl::is_admin.eq(true).or(tenant_user::dsl::is_admin
                                 .eq(true)
-                                .and(api_key::dsl::id.eq(&self_id))),
+                                .and(api_key::dsl::id.eq(self_id))),
                         );
                     }
                     _ => {
@@ -519,7 +523,7 @@ impl Validator for ValidateTenantAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -556,7 +560,7 @@ impl Validator for ValidateTenantAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -609,7 +613,7 @@ impl Validator for ValidateTenantUsersAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -653,7 +657,7 @@ impl Validator for ValidateTenantUsersAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -706,8 +710,8 @@ impl Validator for ValidateTenantUserAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
-            let user_id = self.user_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
+            let user_id = UuidNT::from(self.user_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -757,7 +761,7 @@ impl Validator for ValidateTenantUserAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -805,7 +809,7 @@ impl Validator for ValidateApplicationsAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -855,7 +859,7 @@ impl Validator for ValidateApplicationsAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -915,7 +919,7 @@ impl Validator for ValidateApplicationAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let application_id = self.application_id;
+            let application_id = UuidNT::from(self.application_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -970,7 +974,7 @@ impl Validator for ValidateApplicationAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let application_id = self.application_id;
+            let application_id = UuidNT::from(self.application_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1173,7 +1177,7 @@ impl Validator for ValidateDeviceProfilesAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1223,7 +1227,7 @@ impl Validator for ValidateDeviceProfilesAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1274,7 +1278,7 @@ impl Validator for ValidateDeviceProfileAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let device_profile_id = self.device_profile_id;
+            let device_profile_id = UuidNT::from(self.device_profile_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1331,7 +1335,7 @@ impl Validator for ValidateDeviceProfileAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let device_profile_id = self.device_profile_id;
+            let device_profile_id = UuidNT::from(self.device_profile_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1386,7 +1390,7 @@ impl Validator for ValidateDevicesAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let application_id = self.application_id;
+            let application_id = UuidNT::from(self.application_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1441,7 +1445,7 @@ impl Validator for ValidateDevicesAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let application_id = self.application_id;
+            let application_id = UuidNT::from(self.application_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1704,7 +1708,7 @@ impl Validator for ValidateGatewaysAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1754,7 +1758,7 @@ impl Validator for ValidateGatewaysAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let tenant_id = self.tenant_id;
+            let tenant_id = UuidNT::from(self.tenant_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1909,7 +1913,7 @@ impl Validator for ValidateMulticastGroupsAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let application_id = self.application_id;
+            let application_id = UuidNT::from(self.application_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -1964,7 +1968,7 @@ impl Validator for ValidateMulticastGroupsAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let application_id = self.application_id;
+            let application_id = UuidNT::from(self.application_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -2019,7 +2023,7 @@ impl Validator for ValidateMulticastGroupAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let multicast_group_id = self.multicast_group_id;
+            let multicast_group_id = UuidNT::from(self.multicast_group_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -2078,7 +2082,7 @@ impl Validator for ValidateMulticastGroupAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let multicast_group_id = self.multicast_group_id;
+            let multicast_group_id = UuidNT::from(self.multicast_group_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -2137,7 +2141,7 @@ impl Validator for ValidateMulticastGroupQueueAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let multicast_group_id = self.multicast_group_id;
+            let multicast_group_id = UuidNT::from(self.multicast_group_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
@@ -2196,7 +2200,7 @@ impl Validator for ValidateMulticastGroupQueueAccess {
         task::spawn_blocking({
             let id = UuidNT::from(id);
             let flag = self.flag;
-            let multicast_group_id = self.multicast_group_id;
+            let multicast_group_id = UuidNT::from(self.multicast_group_id);
 
             move || -> Result<i64, Error> {
                 let mut c = get_db_conn()?;
