@@ -87,8 +87,10 @@ impl serialize::ToSql<Numeric, Pg> for BigDecimal {
 #[cfg(feature = "sqlite")]
 impl deserialize::FromSql<Double, Sqlite> for BigDecimal {
     fn from_sql(value: <Sqlite as Backend>::RawValue<'_>) -> deserialize::Result<Self> {
+        use bigdecimal::FromPrimitive;
         let bd_val = <f64>::from_sql(value)?;
-        let bd = bigdecimal::BigDecimal::from(bd_val)?;
+        let bd = bigdecimal::BigDecimal::from_f64(bd_val)
+            .ok_or_else(|| format!("Unrepresentable BigDecimal from f64 value"))?;
         Ok(BigDecimal(bd))
     }
 }
@@ -96,11 +98,12 @@ impl deserialize::FromSql<Double, Sqlite> for BigDecimal {
 #[cfg(feature = "sqlite")]
 impl serialize::ToSql<Double, Sqlite> for BigDecimal {
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
-        <f64>::to_sql(
+        use bigdecimal::ToPrimitive;
+        <f64 as serialize::ToSql<Double, Sqlite>>::to_sql(
             &self
                 .0
                 .to_f64()
-                .ok_or_else(format!("Unrepresentable f64 value as BigDecimal")),
+                .ok_or_else(|| format!("Unrepresentable f64 value as BigDecimal"))?,
             out,
         )
     }
@@ -117,12 +120,6 @@ pub type DbUuid = Text;
 #[cfg_attr(feature = "postgres", diesel(sql_type = diesel::sql_types::Uuid))]
 #[cfg_attr(feature = "sqlite", diesel(sql_type = Text))]
 pub struct Uuid(uuid::Uuid);
-
-impl std::convert::AsRef<uuid::Uuid> for Uuid {
-    fn as_ref(&self) -> &uuid::Uuid {
-        &self.0
-    }
-}
 
 impl std::convert::From<uuid::Uuid> for Uuid {
     fn from(u: uuid::Uuid) -> Self {
@@ -183,7 +180,7 @@ impl serialize::ToSql<diesel::sql_types::Uuid, Pg> for Uuid {
 impl deserialize::FromSql<Text, Sqlite> for Uuid {
     fn from_sql(value: <Sqlite as Backend>::RawValue<'_>) -> deserialize::Result<Self> {
         let s = <*const str>::from_sql(value)?;
-        let u = uuid::Uuid::try_parse(s)?;
+        let u = uuid::Uuid::try_parse(unsafe { &*s })?;
         Ok(Uuid(u))
     }
 }
@@ -194,8 +191,8 @@ impl serialize::ToSql<Text, Sqlite> for Uuid {
         let str_uuid = self
             .0
             .hyphenated()
-            .encode_lower(&uuid::Uuid::encode_buffer());
-        <str>::to_sql(str_uuid, out)
+            .encode_lower(&mut uuid::Uuid::encode_buffer());
+        <str as serialize::ToSql<Text, Sqlite>>::to_sql(str_uuid, out)
     }
 }
 
@@ -257,7 +254,7 @@ impl serialize::ToSql<DevNoncesPgType, Pg> for DevNonces {
 impl deserialize::FromSql<Text, Sqlite> for DevNonces {
     fn from_sql(value: <Sqlite as Backend>::RawValue<'_>) -> deserialize::Result<Self> {
         let s = <*const str>::from_sql(value)?;
-        let nonces = serde_json::from_str::<DevNonces>(s)?;
+        let nonces = serde_json::from_str::<DevNonces>(unsafe { &*s })?;
         Ok(nonces)
     }
 }
@@ -266,6 +263,6 @@ impl deserialize::FromSql<Text, Sqlite> for DevNonces {
 impl serialize::ToSql<Text, Sqlite> for DevNonces {
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
         let s = serde_json::to_string(&self)?;
-        <str>::to_sql(&s, out)
+        <str as serialize::ToSql<Text, Sqlite>>::to_sql(&s, out)
     }
 }
