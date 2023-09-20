@@ -4,6 +4,8 @@ use std::str::FromStr;
 use std::time::Duration;
 
 use anyhow::{Context, Result};
+#[cfg(feature = "sqlite")]
+use diesel::sqlite::Sqlite;
 #[cfg(feature = "diesel")]
 use diesel::{
     backend::Backend,
@@ -70,7 +72,7 @@ where
     }
 }
 
-#[cfg(feature = "diesel")]
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for CommonName
 where
     DB: Backend,
@@ -79,6 +81,14 @@ where
 {
     fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         str::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for CommonName {
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -177,7 +187,7 @@ where
     }
 }
 
-#[cfg(feature = "diesel")]
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for Revision
 where
     DB: Backend,
@@ -186,6 +196,14 @@ where
 {
     fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         str::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for Revision {
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -258,7 +276,7 @@ where
     }
 }
 
-#[cfg(feature = "diesel")]
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for MacVersion
 where
     DB: Backend,
@@ -267,6 +285,14 @@ where
 {
     fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         str::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for MacVersion {
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 

@@ -9,6 +9,8 @@ use diesel::{
     sql_types::Binary,
     {deserialize, serialize},
 };
+#[cfg(feature = "sqlite")]
+use diesel::{query_builder::BindCollector, sqlite::Sqlite};
 #[cfg(feature = "serde")]
 use serde::{
     de::{self, Visitor},
@@ -138,7 +140,7 @@ where
     }
 }
 
-#[cfg(feature = "diesel")]
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Binary, DB> for EUI64
 where
     DB: Backend,
@@ -147,6 +149,14 @@ where
 {
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         <[u8]>::to_sql(&self.to_be_bytes(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Binary, Sqlite> for EUI64 {
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
+        out.set_value(Vec::from(self.to_be_bytes().as_slice()));
+        Ok(serialize::IsNull::No)
     }
 }
 

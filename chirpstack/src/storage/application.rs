@@ -133,6 +133,7 @@ where
     }
 }
 
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for IntegrationKind
 where
     DB: Backend,
@@ -141,6 +142,14 @@ where
 {
     fn to_sql(&self, out: &mut serialize::Output<'_, '_, DB>) -> serialize::Result {
         <String as serialize::ToSql<Text, DB>>::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for IntegrationKind {
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 

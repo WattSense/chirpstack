@@ -4,6 +4,8 @@ use std::ops::{Deref, DerefMut};
 use std::time::Duration;
 
 use anyhow::Result;
+#[cfg(feature = "sqlite")]
+use diesel::sqlite::Sqlite;
 #[cfg(feature = "diesel")]
 use diesel::{
     backend::Backend,
@@ -1891,7 +1893,7 @@ where
     }
 }
 
-#[cfg(feature = "diesel")]
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<SmallInt, DB> for RelayModeActivation
 where
     DB: Backend,
@@ -1901,6 +1903,14 @@ where
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         let i = self.to_u8() as i16;
         i16::to_sql(&i, &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<SmallInt, Sqlite> for RelayModeActivation {
+    fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_u8() as i32);
+        Ok(serialize::IsNull::No)
     }
 }
 

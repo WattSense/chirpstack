@@ -6,6 +6,8 @@ use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use diesel::backend::Backend;
 use diesel::sql_types::Text;
+#[cfg(feature = "sqlite")]
+use diesel::sqlite::Sqlite;
 use diesel::{
     query_builder::bind_collector::RawBytesBindCollector,
     {deserialize, serialize},
@@ -42,6 +44,7 @@ where
     }
 }
 
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for Codec
 where
     DB: Backend,
@@ -50,6 +53,14 @@ where
 {
     fn to_sql(&self, out: &mut serialize::Output<'_, '_, DB>) -> serialize::Result {
         str::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for Codec {
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 

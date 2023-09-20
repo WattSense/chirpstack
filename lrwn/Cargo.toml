@@ -28,6 +28,8 @@ lazy_static = "1.4"
 [features]
 default = []
 diesel = ["dep:diesel", "serde"]
+postgres = ["diesel", "diesel/postgres"]
+sqlite = ["diesel", "diesel/sqlite"]
 serde = ["dep:serde"]
 crypto = ["dep:cmac", "dep:aes"]
 regions = []

@@ -6,6 +6,8 @@ use super::db_adapter::BigDecimal;
 use super::db_adapter::DbUuid;
 use anyhow::{Context, Result};
 use chrono::{DateTime, Duration, Utc};
+#[cfg(feature = "sqlite")]
+use diesel::sqlite::Sqlite;
 use diesel::{
     backend::Backend,
     dsl,
@@ -63,6 +65,7 @@ where
     }
 }
 
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for DeviceClass
 where
     DB: Backend,
@@ -71,6 +74,14 @@ where
 {
     fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         str::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for DeviceClass {
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 

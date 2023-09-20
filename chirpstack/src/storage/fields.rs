@@ -192,6 +192,7 @@ where
     }
 }
 
+#[cfg(feature = "postgres")]
 impl<DB> serialize::ToSql<Text, DB> for MulticastGroupSchedulingType
 where
     DB: Backend,
@@ -200,6 +201,14 @@ where
 {
     fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, DB>) -> serialize::Result {
         str::to_sql(&self.to_string(), &mut out.reborrow())
+    }
+}
+
+#[cfg(feature = "sqlite")]
+impl serialize::ToSql<Text, Sqlite> for MulticastGroupSchedulingType {
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Sqlite>) -> serialize::Result {
+        out.set_value(self.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 
