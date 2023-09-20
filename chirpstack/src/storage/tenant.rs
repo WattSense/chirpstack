@@ -276,8 +276,8 @@ pub async fn update_user(tu: TenantUser) -> Result<TenantUser, Error> {
 
 pub async fn get_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<TenantUser, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
-        let user_id = *user_id;
+        let tenant_id = UuidNT::from(tenant_id);
+        let user_id = UuidNT::from(user_id);
         move || -> Result<TenantUser, Error> {
             let mut c = get_db_conn()?;
             let tu: TenantUser = tenant_user::dsl::tenant_user
@@ -293,7 +293,7 @@ pub async fn get_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<TenantUser, Er
 
 pub async fn get_user_count(tenant_id: &Uuid) -> Result<i64, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
+        let tenant_id = UuidNT::from(tenant_id);
         move || -> Result<i64, Error> {
             let mut c = get_db_conn()?;
             let count = tenant_user::dsl::tenant_user
@@ -312,7 +312,7 @@ pub async fn get_users(
     offset: i64,
 ) -> Result<Vec<TenantUserListItem>, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
+        let tenant_id = UuidNT::from(tenant_id);
         move || -> Result<Vec<TenantUserListItem>, Error> {
             let mut c = get_db_conn()?;
             let items = tenant_user::dsl::tenant_user
@@ -341,8 +341,8 @@ pub async fn get_users(
 
 pub async fn delete_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
-        let user_id = *user_id;
+        let tenant_id = UuidNT::from(tenant_id);
+        let user_id = UuidNT::from(user_id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(
@@ -368,7 +368,7 @@ pub async fn delete_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<(), Error> 
 
 pub async fn get_tenant_users_for_user(user_id: &Uuid) -> Result<Vec<TenantUser>, Error> {
     task::spawn_blocking({
-        let user_id = *user_id;
+        let user_id = UuidNT::from(user_id);
         move || -> Result<Vec<TenantUser>, Error> {
             let mut c = get_db_conn()?;
             let items = tenant_user::dsl::tenant_user

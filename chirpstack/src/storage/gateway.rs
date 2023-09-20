@@ -414,7 +414,7 @@ pub async fn get_meta(gateway_id: &EUI64) -> Result<GatewayMeta, Error> {
 
 pub async fn get_counts_by_state(tenant_id: &Option<Uuid>) -> Result<GatewayCountsByState, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
+        let tenant_id = tenant_id.map(UuidNT::from);
         move || -> Result<GatewayCountsByState, Error> {
             let mut c = get_db_conn()?;
             let counts: GatewayCountsByState = diesel::sql_query(r#"

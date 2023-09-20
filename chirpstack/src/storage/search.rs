@@ -7,6 +7,7 @@ use regex::Regex;
 use tokio::task;
 use uuid::Uuid;
 
+use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
 use super::get_db_conn;
 use lrwn::EUI64;
@@ -48,7 +49,7 @@ pub async fn global_search(
     offset: usize,
 ) -> Result<Vec<SearchResult>, Error> {
     task::spawn_blocking({
-        let user_id = *user_id;
+        let user_id = UuidNT::from(user_id);
         let search = search.to_string();
         let (query, tags) = parse_search_query(&search);
         let query = format!("%{}%", query);

@@ -506,7 +506,7 @@ pub async fn get_integration(
     kind: IntegrationKind,
 ) -> Result<Integration, Error> {
     task::spawn_blocking({
-        let application_id = *application_id;
+        let application_id = UuidNT::from(application_id);
         move || -> Result<Integration, Error> {
             let mut c = get_db_conn()?;
             let mut i: Integration = application_integration::dsl::application_integration
@@ -564,7 +564,7 @@ pub async fn update_integration(i: Integration) -> Result<Integration, Error> {
 
 pub async fn delete_integration(application_id: &Uuid, kind: IntegrationKind) -> Result<(), Error> {
     task::spawn_blocking({
-        let application_id = *application_id;
+        let application_id = UuidNT::from(application_id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(
@@ -591,7 +591,7 @@ pub async fn get_integrations_for_application(
     application_id: &Uuid,
 ) -> Result<Vec<Integration>, Error> {
     task::spawn_blocking({
-        let application_id = *application_id;
+        let application_id = UuidNT::from(application_id);
         move || -> Result<Vec<Integration>, Error> {
             let mut c = get_db_conn()?;
             let items: Vec<Integration> = application_integration::dsl::application_integration
@@ -612,7 +612,7 @@ pub async fn get_measurement_keys(application_id: &Uuid) -> Result<Vec<String>, 
     }
 
     task::spawn_blocking({
-        let application_id = *application_id;
+        let application_id = UuidNT::from(application_id);
         move || -> Result<Vec<String>, Error> {
             let mut c = get_db_conn()?;
             let keys: Vec<Measurement> = diesel::sql_query(

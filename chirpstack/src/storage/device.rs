@@ -494,7 +494,7 @@ pub async fn list(
 
 pub async fn get_active_inactive(tenant_id: &Option<Uuid>) -> Result<DevicesActiveInactive, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
+        let tenant_id = tenant_id.map(UuidNT::from);
         move || -> Result<DevicesActiveInactive, Error> {
             let mut c = get_db_conn()?;
             diesel::sql_query(r#"
@@ -526,7 +526,7 @@ pub async fn get_active_inactive(tenant_id: &Option<Uuid>) -> Result<DevicesActi
 
 pub async fn get_data_rates(tenant_id: &Option<Uuid>) -> Result<Vec<DevicesDataRate>, Error> {
     task::spawn_blocking({
-        let tenant_id = *tenant_id;
+        let tenant_id = tenant_id.map(UuidNT::from);
         move || -> Result<Vec<DevicesDataRate>, Error> {
             let mut c = get_db_conn()?;
             let mut q = device::dsl::device
