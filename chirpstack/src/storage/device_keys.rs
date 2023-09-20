@@ -120,7 +120,7 @@ pub async fn delete(dev_eui: &EUI64) -> Result<(), Error> {
 pub async fn set_dev_nonces(dev_eui: &EUI64, nonces: &[i32]) -> Result<DeviceKeys, Error> {
     let dk = task::spawn_blocking({
         let dev_eui = *dev_eui;
-        let nonces = nonces.to_vec();
+        let nonces: Vec<Option<i32>> = nonces.iter().map(|v| Some(*v)).collect();
         move || -> Result<DeviceKeys, Error> {
             let mut c = get_db_conn()?;
             diesel::update(device_keys::dsl::device_keys.find(&dev_eui))

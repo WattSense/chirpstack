@@ -196,7 +196,7 @@ impl serialize::ToSql<Text, Sqlite> for Uuid {
     }
 }
 
-type DevNoncesInner = Vec<Option<i32>>;
+pub type DevNoncesInner = Vec<Option<i32>>;
 
 #[cfg(feature = "postgres")]
 type DevNoncesPgType = Array<Nullable<Int4>>;
