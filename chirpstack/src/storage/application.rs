@@ -196,8 +196,8 @@ impl deserialize::FromSql<Text, Sqlite> for IntegrationConfiguration {
 #[cfg(feature = "sqlite")]
 impl serialize::ToSql<Text, Sqlite> for IntegrationConfiguration {
     fn to_sql(&self, out: &mut serialize::Output<'_, '_, Sqlite>) -> serialize::Result {
-        let value = serde_json::to_string(self)?;
-        <String as serialize::ToSql<Text, Sqlite>>::to_sql(&value, out)
+        out.set_value(serde_json::to_string(self)?);
+        Ok(serialize::IsNull::No)
     }
 }
 

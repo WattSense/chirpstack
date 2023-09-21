@@ -99,13 +99,12 @@ impl deserialize::FromSql<Double, Sqlite> for BigDecimal {
 impl serialize::ToSql<Double, Sqlite> for BigDecimal {
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
         use bigdecimal::ToPrimitive;
-        <f64 as serialize::ToSql<Double, Sqlite>>::to_sql(
-            &self
-                .0
-                .to_f64()
-                .ok_or_else(|| format!("Unrepresentable f64 value as BigDecimal"))?,
-            out,
-        )
+        let value = self
+            .0
+            .to_f64()
+            .ok_or_else(|| format!("Unrepresentable f64 value as BigDecimal"))?;
+        out.set_value(value);
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -188,11 +187,8 @@ impl deserialize::FromSql<Text, Sqlite> for Uuid {
 #[cfg(feature = "sqlite")]
 impl serialize::ToSql<Text, Sqlite> for Uuid {
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
-        let str_uuid = self
-            .0
-            .hyphenated()
-            .encode_lower(&mut uuid::Uuid::encode_buffer());
-        <str as serialize::ToSql<Text, Sqlite>>::to_sql(str_uuid, out)
+        out.set_value(self.0.to_string());
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -268,7 +264,7 @@ impl deserialize::FromSql<Text, Sqlite> for DevNonces {
 #[cfg(feature = "sqlite")]
 impl serialize::ToSql<Text, Sqlite> for DevNonces {
     fn to_sql<'b>(&self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
-        let s = serde_json::to_string(&self)?;
-        <str as serialize::ToSql<Text, Sqlite>>::to_sql(&s, out)
+        out.set_value(serde_json::to_string(self)?);
+        Ok(serialize::IsNull::No)
     }
 }

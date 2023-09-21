@@ -74,8 +74,8 @@ impl deserialize::FromSql<Text, Sqlite> for KeyValue {
 #[cfg(feature = "sqlite")]
 impl serialize::ToSql<Text, Sqlite> for KeyValue {
     fn to_sql<'b>(&'b self, out: &mut serialize::Output<'b, '_, Sqlite>) -> serialize::Result {
-        let value = serde_json::to_string(&self.0)?;
-        <String as serialize::ToSql<Text, Sqlite>>::to_sql(&value, out)
+        out.set_value(serde_json::to_string(&self.0)?);
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -138,7 +138,8 @@ impl deserialize::FromSql<Text, Sqlite> for Measurements {
 impl serialize::ToSql<Text, Sqlite> for Measurements {
     fn to_sql(&self, out: &mut serialize::Output<'_, '_, Sqlite>) -> serialize::Result {
         let value = serde_json::to_string(&self.0)?;
-        <String as serialize::ToSql<Text, Sqlite>>::to_sql(&value, out)
+        out.set_value(value);
+        Ok(serialize::IsNull::No)
     }
 }
 
