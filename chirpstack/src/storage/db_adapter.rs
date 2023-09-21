@@ -207,6 +207,12 @@ type DevNoncesPgType = Array<Nullable<Int4>>;
 #[cfg_attr(feature = "sqlite", diesel(sql_type = Text))]
 pub struct DevNonces(DevNoncesInner);
 
+impl std::default::Default for DevNonces {
+    fn default() -> Self {
+        Self(Vec::new())
+    }
+}
+
 impl std::convert::AsRef<DevNoncesInner> for DevNonces {
     fn as_ref(&self) -> &DevNoncesInner {
         &self.0
