@@ -538,6 +538,8 @@ pub async fn enqueue(
                     }
                     "C" => {
                         // Get max. scheduler_run_after timestamp.
+
+                        #[cfg(feature = "postgres")]
                         let res: Option<DateTime<Utc>> =
                             multicast_group_queue_item::dsl::multicast_group_queue_item
                                 .select(dsl::max(
@@ -548,6 +550,19 @@ pub async fn enqueue(
                                         .eq(&qi.multicast_group_id),
                                 )
                                 .first(c)?;
+
+                        #[cfg(feature = "sqlite")]
+                        let res: Option<DateTime<Utc>> =
+                            multicast_group_queue_item::dsl::multicast_group_queue_item
+                                .select(multicast_group_queue_item::dsl::scheduler_run_after)
+                                .filter(
+                                    multicast_group_queue_item::dsl::multicast_group_id
+                                        .eq(&qi.multicast_group_id),
+                                )
+                                .get_results(c)?
+                                .into_iter()
+                                // fallback on code max instead of DB builtin
+                                .max();
 
                         let mut scheduler_run_after_ts = match res {
                             Some(v) => {
