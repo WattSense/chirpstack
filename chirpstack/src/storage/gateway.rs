@@ -128,7 +128,6 @@ pub async fn create(gw: Gateway) -> Result<Gateway, Error> {
                 // use for_update to lock the tenant.
                 let t: super::tenant::Tenant = tenant::dsl::tenant
                     .find(&gw.tenant_id)
-                    .for_update()
                     .get_result(c)
                     .await
                     .map_err(|e| Error::from_diesel(e, gw.tenant_id.to_string()))?;

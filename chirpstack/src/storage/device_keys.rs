@@ -117,7 +117,6 @@ pub async fn validate_incr_join_and_store_dev_nonce(
             Box::pin(async move {
                 let mut dk: DeviceKeys = device_keys::dsl::device_keys
                     .find(&dev_eui)
-                    .for_update()
                     .first(c)
                     .await
                     .map_err(|e| Error::from_diesel(e, dev_eui.to_string()))?;

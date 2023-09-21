@@ -244,7 +244,6 @@ pub async fn create(d: Device) -> Result<Device, Error> {
                     ))
                     .inner_join(application::table)
                     .filter(application::dsl::id.eq(&d.application_id))
-                    .for_update()
                     .first(c)
                     .await?;
 
