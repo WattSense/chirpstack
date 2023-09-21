@@ -1,0 +1,1 @@
+drop table multicast_group_gateway;
