@@ -162,7 +162,6 @@ pub async fn add_device(relay_dev_eui: EUI64, device_dev_eui: EUI64) -> Result<(
                 // We lock the relay device to avoid race-conditions in the validation.
                 let rd: Device = device::dsl::device
                     .find(&relay_dev_eui)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, relay_dev_eui.to_string()))?;
 

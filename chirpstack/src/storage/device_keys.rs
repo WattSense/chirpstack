@@ -170,7 +170,6 @@ pub async fn validate_and_store_dev_nonce(
             c.transaction::<DeviceKeys, Error, _>(|c| {
                 let mut dk: DeviceKeys = device_keys::dsl::device_keys
                     .find(&dev_eui)
-                    .for_update()
                     .first(c)
                     .map_err(|e| Error::from_diesel(e, dev_eui.to_string()))?;
 
