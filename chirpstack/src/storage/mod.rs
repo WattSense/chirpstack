@@ -50,7 +50,10 @@ lazy_static! {
     static ref REDIS_PREFIX: RwLock<String> = RwLock::new("".to_string());
 }
 
+#[cfg(feature = "postgres")]
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
+#[cfg(feature = "sqlite")]
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations_sqlite");
 
 #[cfg(feature = "postgres")]
 pub use postgres::get_db_conn;
