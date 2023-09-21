@@ -294,13 +294,11 @@ pub async fn add_device(group_id: &Uuid, dev_eui: &EUI64) -> Result<(), Error> {
             c.transaction::<(), Error, _>(|c| {
                 let d: super::device::Device = device::dsl::device
                     .find(&dev_eui)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, dev_eui.to_string()))?;
 
                 let mg: MulticastGroup = multicast_group::dsl::multicast_group
                     .find(&group_id)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, group_id.to_string()))?;
 
@@ -361,19 +359,16 @@ pub async fn add_gateway(group_id: &Uuid, gateway_id: &EUI64) -> Result<(), Erro
             c.transaction::<(), Error, _>(|c| {
                 let gw: super::gateway::Gateway = gateway::dsl::gateway
                     .find(&gateway_id)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, gateway_id.to_string()))?;
 
                 let mg: MulticastGroup = multicast_group::dsl::multicast_group
                     .find(&group_id)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, group_id.to_string()))?;
 
                 let a: super::application::Application = application::dsl::application
                     .find(&mg.application_id)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, mg.application_id.to_string()))?;
 
@@ -474,7 +469,6 @@ pub async fn enqueue(
                 let mut ids: Vec<Uuid> = Vec::new();
                 let mg: MulticastGroup = multicast_group::dsl::multicast_group
                     .find(&qi.multicast_group_id)
-                    .for_update()
                     .get_result(c)
                     .map_err(|e| Error::from_diesel(e, qi.multicast_group_id.to_string()))?;
 
