@@ -535,7 +535,9 @@ pub async fn enqueue(
                                     multicast_group_queue_item::dsl::multicast_group_id
                                         .eq(&qi.multicast_group_id),
                                 )
-                                .first(c)?;
+                                .get_results(c)?
+                                .into_iter()
+                                .max();
 
                         let mut scheduler_run_after_ts = match res {
                             Some(v) => {
