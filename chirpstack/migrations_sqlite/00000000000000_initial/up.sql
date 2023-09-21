@@ -192,7 +192,7 @@ create table device (
     created_at datetime not null,
     updated_at datetime not null,
     last_seen_at datetime,
-    scheduler_run_after datetime null,
+    scheduler_run_after datetime,
     name varchar(100) not null,
     description text not null,
     external_power_source boolean not null,
