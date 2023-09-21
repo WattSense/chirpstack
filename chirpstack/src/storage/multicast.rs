@@ -526,9 +526,11 @@ pub async fn enqueue(
                         // Get max. scheduler_run_after timestamp.
                         let res: Option<DateTime<Utc>> =
                             multicast_group_queue_item::dsl::multicast_group_queue_item
-                                .select(dsl::max(
-                                    multicast_group_queue_item::dsl::scheduler_run_after,
-                                ))
+                                // FIXME: somehow use max
+                                // .select(dsl::max(
+                                //     multicast_group_queue_item::dsl::scheduler_run_after,
+                                // ))
+                                .select(multicast_group_queue_item::dsl::scheduler_run_after)
                                 .filter(
                                     multicast_group_queue_item::dsl::multicast_group_id
                                         .eq(&qi.multicast_group_id),
