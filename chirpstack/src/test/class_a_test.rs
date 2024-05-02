@@ -1870,7 +1870,7 @@ async fn test_lorawan_10_end_to_end_enc() {
         Test {
             name: "end-to-end encryption using AppSkey + encrypted downlink".into(),
             device_queue_items: vec![device_queue::DeviceQueueItem {
-                id: Uuid::nil(),
+                id: Uuid::nil().into(),
                 dev_eui: dev.dev_eui.clone(),
                 f_port: 1,
                 data: vec![1, 2, 3, 4],

@@ -188,7 +188,7 @@ pub mod test {
                 let mut c = get_db_conn()?;
                 diesel::update(device_keys::dsl::device_keys.find(&dev_eui))
                     .set((
-                        device_keys::dev_nonces.eq::<Vec<i32>>(Vec::new()),
+                        device_keys::dev_nonces.eq::<DevNonces>(Vec::new().into()),
                         device_keys::join_nonce.eq(0),
                     ))
                     .get_result(&mut c)

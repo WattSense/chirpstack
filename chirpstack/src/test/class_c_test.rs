@@ -113,7 +113,7 @@ async fn test_downlink_scheduler() {
     run_scheduler_test(&DownlinkTest {
         name: "device has not yet sent an uplink".into(),
         device_queue_items: vec![device_queue::DeviceQueueItem {
-            id: Uuid::nil(),
+            id: Uuid::nil().into(),
             dev_eui: dev.dev_eui.clone(),
             f_port: 10,
             data: vec![1, 2, 3],
