@@ -700,7 +700,27 @@ pub async fn get_schedulable_queue_items(limit: usize) -> Result<Vec<MulticastGr
             let mut c = get_db_conn()?;
             c.transaction::<Vec<MulticastGroupQueueItem>, Error, _>(|c| {
                 let conf = config::get();
-                diesel::sql_query(
+                diesel::sql_query(if cfg!(feature = "sqlite") {
+                    r#"
+                        update
+                            multicast_group_queue_item
+                        set
+                            scheduler_run_after = ?3
+                        where
+                            id in (
+                                select
+                                    id
+                                from
+                                    multicast_group_queue_item
+                                where
+                                    scheduler_run_after <= ?2
+                                order by
+                                    created_at
+                                limit ?1
+                            )
+                        returning *
+                    "#
+                } else {
                     r#"
                         update
                             multicast_group_queue_item
@@ -719,8 +739,8 @@ pub async fn get_schedulable_queue_items(limit: usize) -> Result<Vec<MulticastGr
                                 limit $1
                             )
                         returning *
-                    "#,
-                )
+                    "#
+                })
                 .bind::<diesel::sql_types::Integer, _>(limit as i32)
                 .bind::<DbTimestamptz, _>(Utc::now())
                 .bind::<DbTimestamptz, _>(
