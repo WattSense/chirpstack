@@ -265,9 +265,9 @@ pub fn redis_key(s: String) -> String {
 pub fn reset_db() -> Result<()> {
     let mut conn = get_db_conn()?;
     conn.revert_all_migrations(MIGRATIONS)
-        .map_err(|e| anyhow!("{}", e))?;
+        .map_err(|e| anyhow!("During revert: {}", e))?;
     conn.run_pending_migrations(MIGRATIONS)
-        .map_err(|e| anyhow!("{}", e))?;
+        .map_err(|e| anyhow!("During run: {}", e))?;
 
     Ok(())
 }
