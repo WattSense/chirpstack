@@ -3,7 +3,7 @@ use std::sync::RwLock;
 use anyhow::{Context, Result};
 use tracing::info;
 
-use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
+use diesel::r2d2::{ConnectionManager, CustomizeConnection, Error, Pool, PooledConnection};
 use diesel::sqlite::SqliteConnection;
 
 use crate::config::Postgresql;
@@ -23,6 +23,7 @@ pub fn setup(conf: &Postgresql) -> Result<()> {
             0 => None,
             _ => Some(conf.min_idle_connections),
         })
+        .connection_customizer(Box::new(ForeignKeyEnabler))
         .build(ConnectionManager::<SqliteConnection>::new(&conf.dsn))
         .context("Setup Sqlite connection pool error")?;
     set_db_pool(pool);
@@ -46,4 +47,19 @@ fn set_db_pool(p: SqlitePool) {
 pub fn get_db_conn() -> Result<SqlitePoolConnection> {
     let pool = get_db_pool()?;
     Ok(pool.get()?)
+}
+
+#[derive(Debug)]
+struct ForeignKeyEnabler;
+
+impl CustomizeConnection<SqliteConnection, Error> for ForeignKeyEnabler {
+    fn on_acquire(&self, conn: &mut SqliteConnection) -> Result<(), Error> {
+        use diesel::RunQueryDsl;
+        match diesel::sql_query("PRAGMA foreign_keys = ON").execute(conn) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(Error::QueryError(e)),
+        }
+    }
+
+    fn on_release(&self, _conn: SqliteConnection) {}
 }
