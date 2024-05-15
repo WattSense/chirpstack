@@ -4,7 +4,7 @@ use tracing::info;
 
 use crate::api::helpers::ToProto;
 use crate::integration;
-use crate::storage::{application, device, device_profile, tenant, BigDecimal};
+use crate::storage::{application, device, device_profile, fields, tenant};
 use crate::uplink::{helpers, UplinkFrameSet};
 use chirpstack_api::integration as integration_pb;
 
@@ -27,7 +27,7 @@ pub async fn handle(
             pl.margin as i32,
             pl.battery == 0,
             if pl.battery > 0 && pl.battery < 255 {
-                let v: BigDecimal = ((pl.battery as f32) / 254.0 * 100.0).try_into()?;
+                let v: fields::BigDecimal = ((pl.battery as f32) / 254.0 * 100.0).try_into()?;
                 Some(v.with_scale(2).into())
             } else {
                 None
