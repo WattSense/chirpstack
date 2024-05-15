@@ -43,8 +43,6 @@ mod sqlite;
 pub mod tenant;
 pub mod user;
 
-pub use db_adapter::Uuid;
-
 lazy_static! {
     static ref REDIS_POOL: RwLock<Option<RedisPool>> = RwLock::new(None);
     static ref REDIS_PREFIX: RwLock<String> = RwLock::new("".to_string());

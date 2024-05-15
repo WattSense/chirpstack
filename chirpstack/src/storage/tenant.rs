@@ -8,7 +8,6 @@ use tokio::task;
 use tracing::info;
 use uuid::Uuid;
 
-use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
 use super::schema::{tenant, tenant_user, user};
 use super::{fields, get_db_conn};
@@ -16,7 +15,7 @@ use super::{fields, get_db_conn};
 #[derive(Queryable, Insertable, PartialEq, Eq, Debug, Clone)]
 #[diesel(table_name = tenant)]
 pub struct Tenant {
-    pub id: UuidNT,
+    pub id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -61,8 +60,8 @@ impl Default for Tenant {
 #[derive(Queryable, Insertable, AsChangeset, PartialEq, Eq, Debug)]
 #[diesel(table_name = tenant_user)]
 pub struct TenantUser {
-    pub tenant_id: UuidNT,
-    pub user_id: UuidNT,
+    pub tenant_id: fields::Uuid,
+    pub user_id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub is_admin: bool,
@@ -88,8 +87,8 @@ impl Default for TenantUser {
 
 #[derive(Queryable, PartialEq, Eq, Debug)]
 pub struct TenantUserListItem {
-    pub tenant_id: UuidNT,
-    pub user_id: UuidNT,
+    pub tenant_id: fields::Uuid,
+    pub user_id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub email: String,
@@ -122,7 +121,7 @@ pub async fn create(t: Tenant) -> Result<Tenant, Error> {
 
 pub async fn get(id: &Uuid) -> Result<Tenant, Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<Tenant, Error> {
             let mut c = get_db_conn()?;
             let t = tenant::dsl::tenant
@@ -163,7 +162,7 @@ pub async fn update(t: Tenant) -> Result<Tenant, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(tenant::dsl::tenant.find(&id))
@@ -191,7 +190,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(user_id) = &filters.user_id {
-                q = q.filter(tenant_user::dsl::user_id.eq(UuidNT::from(user_id)));
+                q = q.filter(tenant_user::dsl::user_id.eq(fields::Uuid::from(user_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -229,7 +228,7 @@ pub async fn list(limit: i64, offset: i64, filters: &Filters) -> Result<Vec<Tena
                 .into_boxed();
 
             if let Some(user_id) = &filters.user_id {
-                q = q.filter(tenant_user::dsl::user_id.eq(UuidNT::from(user_id)));
+                q = q.filter(tenant_user::dsl::user_id.eq(fields::Uuid::from(user_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -295,8 +294,8 @@ pub async fn update_user(tu: TenantUser) -> Result<TenantUser, Error> {
 
 pub async fn get_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<TenantUser, Error> {
     task::spawn_blocking({
-        let tenant_id = UuidNT::from(tenant_id);
-        let user_id = UuidNT::from(user_id);
+        let tenant_id = fields::Uuid::from(tenant_id);
+        let user_id = fields::Uuid::from(user_id);
         move || -> Result<TenantUser, Error> {
             let mut c = get_db_conn()?;
             let tu: TenantUser = tenant_user::dsl::tenant_user
@@ -312,7 +311,7 @@ pub async fn get_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<TenantUser, Er
 
 pub async fn get_user_count(tenant_id: &Uuid) -> Result<i64, Error> {
     task::spawn_blocking({
-        let tenant_id = UuidNT::from(tenant_id);
+        let tenant_id = fields::Uuid::from(tenant_id);
         move || -> Result<i64, Error> {
             let mut c = get_db_conn()?;
             let count = tenant_user::dsl::tenant_user
@@ -331,7 +330,7 @@ pub async fn get_users(
     offset: i64,
 ) -> Result<Vec<TenantUserListItem>, Error> {
     task::spawn_blocking({
-        let tenant_id = UuidNT::from(tenant_id);
+        let tenant_id = fields::Uuid::from(tenant_id);
         move || -> Result<Vec<TenantUserListItem>, Error> {
             let mut c = get_db_conn()?;
             let items = tenant_user::dsl::tenant_user
@@ -360,8 +359,8 @@ pub async fn get_users(
 
 pub async fn delete_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let tenant_id = UuidNT::from(tenant_id);
-        let user_id = UuidNT::from(user_id);
+        let tenant_id = fields::Uuid::from(tenant_id);
+        let user_id = fields::Uuid::from(user_id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(
@@ -387,7 +386,7 @@ pub async fn delete_user(tenant_id: &Uuid, user_id: &Uuid) -> Result<(), Error> 
 
 pub async fn get_tenant_users_for_user(user_id: &Uuid) -> Result<Vec<TenantUser>, Error> {
     task::spawn_blocking({
-        let user_id = UuidNT::from(user_id);
+        let user_id = fields::Uuid::from(user_id);
         move || -> Result<Vec<TenantUser>, Error> {
             let mut c = get_db_conn()?;
             let items = tenant_user::dsl::tenant_user

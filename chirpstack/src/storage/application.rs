@@ -19,7 +19,6 @@ use tokio::task;
 use tracing::info;
 use uuid::Uuid;
 
-use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
 use super::schema::{application, application_integration};
 use super::{fields, get_db_conn};
@@ -27,8 +26,8 @@ use super::{fields, get_db_conn};
 #[derive(Clone, Queryable, Insertable, PartialEq, Eq, Debug)]
 #[diesel(table_name = application)]
 pub struct Application {
-    pub id: UuidNT,
-    pub tenant_id: UuidNT,
+    pub id: fields::Uuid,
+    pub tenant_id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -71,7 +70,7 @@ pub struct Filters {
 
 #[derive(Queryable, PartialEq, Eq, Debug)]
 pub struct ApplicationListItem {
-    pub id: UuidNT,
+    pub id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -298,7 +297,7 @@ pub struct IftttConfiguration {
 #[derive(Clone, Queryable, Insertable, PartialEq, Eq, Debug)]
 #[diesel(table_name = application_integration)]
 pub struct Integration {
-    pub application_id: UuidNT,
+    pub application_id: fields::Uuid,
     pub kind: IntegrationKind,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -339,7 +338,7 @@ pub async fn create(a: Application) -> Result<Application, Error> {
 
 pub async fn get(id: &Uuid) -> Result<Application, Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<Application, Error> {
             let mut c = get_db_conn()?;
             let a = application::dsl::application
@@ -380,7 +379,7 @@ pub async fn update(a: Application) -> Result<Application, Error> {
 
 pub async fn update_mqtt_cls_cert(id: &Uuid, cert: &[u8]) -> Result<Application, Error> {
     let app = task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         let cert = cert.to_vec();
         move || -> Result<Application, Error> {
             let mut c = get_db_conn()?;
@@ -403,7 +402,7 @@ pub async fn update_mqtt_cls_cert(id: &Uuid, cert: &[u8]) -> Result<Application,
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(application::dsl::application.find(&id)).execute(&mut c)?;
@@ -432,7 +431,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(application::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
+                q = q.filter(application::dsl::tenant_id.eq(fields::Uuid::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -472,7 +471,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(application::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
+                q = q.filter(application::dsl::tenant_id.eq(fields::Uuid::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -518,7 +517,7 @@ pub async fn get_integration(
     kind: IntegrationKind,
 ) -> Result<Integration, Error> {
     task::spawn_blocking({
-        let application_id = UuidNT::from(application_id);
+        let application_id = fields::Uuid::from(application_id);
         move || -> Result<Integration, Error> {
             let mut c = get_db_conn()?;
             let mut i: Integration = application_integration::dsl::application_integration
@@ -576,7 +575,7 @@ pub async fn update_integration(i: Integration) -> Result<Integration, Error> {
 
 pub async fn delete_integration(application_id: &Uuid, kind: IntegrationKind) -> Result<(), Error> {
     task::spawn_blocking({
-        let application_id = UuidNT::from(application_id);
+        let application_id = fields::Uuid::from(application_id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(
@@ -603,7 +602,7 @@ pub async fn get_integrations_for_application(
     application_id: &Uuid,
 ) -> Result<Vec<Integration>, Error> {
     task::spawn_blocking({
-        let application_id = UuidNT::from(application_id);
+        let application_id = fields::Uuid::from(application_id);
         move || -> Result<Vec<Integration>, Error> {
             let mut c = get_db_conn()?;
             let items: Vec<Integration> = application_integration::dsl::application_integration
@@ -625,7 +624,7 @@ struct Measurement {
 #[cfg(feature = "postgres")]
 pub async fn get_measurement_keys(application_id: &Uuid) -> Result<Vec<String>, Error> {
     task::spawn_blocking({
-        let application_id = UuidNT::from(application_id);
+        let application_id = fields::Uuid::from(application_id);
         move || -> Result<Vec<String>, Error> {
             let mut c = get_db_conn()?;
             let keys: Vec<Measurement> = diesel::sql_query(
@@ -654,7 +653,7 @@ pub async fn get_measurement_keys(application_id: &Uuid) -> Result<Vec<String>, 
 #[cfg(feature = "sqlite")]
 pub async fn get_measurement_keys(application_id: &Uuid) -> Result<Vec<String>, Error> {
     task::spawn_blocking({
-        let application_id = UuidNT::from(application_id);
+        let application_id = fields::Uuid::from(application_id);
         move || -> Result<Vec<String>, Error> {
             let mut c = get_db_conn()?;
             let keys: Vec<Measurement> = diesel::sql_query(

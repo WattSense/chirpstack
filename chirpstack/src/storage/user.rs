@@ -12,15 +12,14 @@ use tracing::info;
 use uuid::Uuid;
 use validator::validate_email;
 
-use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
-use super::get_db_conn;
 use super::schema::user;
+use super::{fields, get_db_conn};
 
 #[derive(Queryable, Insertable, PartialEq, Eq, Debug, Clone)]
 #[diesel(table_name = user)]
 pub struct User {
-    pub id: UuidNT,
+    pub id: fields::Uuid,
     pub external_id: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -85,7 +84,7 @@ pub async fn create(u: User) -> Result<User, Error> {
 
 pub async fn get(id: &Uuid) -> Result<User, Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<User, Error> {
             let mut c = get_db_conn()?;
             let u = user::dsl::user
@@ -184,7 +183,7 @@ pub async fn update(u: User) -> Result<User, Error> {
 
 pub async fn set_password_hash(id: &Uuid, hash: &str) -> Result<User, Error> {
     let u = task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         let hash = hash.to_string();
         move || -> Result<User, Error> {
             let mut c = get_db_conn()?;
@@ -201,7 +200,7 @@ pub async fn set_password_hash(id: &Uuid, hash: &str) -> Result<User, Error> {
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra = diesel::delete(user::dsl::user.find(&id))

@@ -6,9 +6,7 @@ use regex::Regex;
 use tokio::task;
 use uuid::Uuid;
 
-use super::db_adapter::Uuid as UuidNT;
-use super::error::Error;
-use super::get_db_conn;
+use super::{error::Error, fields, get_db_conn};
 use lrwn::EUI64;
 
 lazy_static! {
@@ -21,14 +19,12 @@ pub struct SearchResult {
     pub kind: String,
     #[diesel(sql_type = diesel::sql_types::Float)]
     pub score: f32,
-    #[cfg_attr(feature = "postgres", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>))]
-    #[cfg_attr(feature = "sqlite", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>))]
-    pub tenant_id: Option<Uuid>,
+    #[diesel(sql_type = diesel::sql_types::Nullable<fields::sql_types::Uuid>)]
+    pub tenant_id: Option<fields::Uuid>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>)]
     pub tenant_name: Option<String>,
-    #[cfg_attr(feature = "postgres", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Uuid>))]
-    #[cfg_attr(feature = "sqlite", diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>))]
-    pub application_id: Option<Uuid>,
+    #[diesel(sql_type = diesel::sql_types::Nullable<fields::sql_types::Uuid>)]
+    pub application_id: Option<fields::Uuid>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Text>)]
     pub application_name: Option<String>,
     #[diesel(sql_type = diesel::sql_types::Nullable<diesel::sql_types::Binary>)]
@@ -50,7 +46,7 @@ pub async fn global_search(
     offset: usize,
 ) -> Result<Vec<SearchResult>, Error> {
     task::spawn_blocking({
-        let user_id = UuidNT::from(user_id);
+        let user_id = fields::Uuid::from(user_id);
         let search = search.to_string();
         let (query, tags) = parse_search_query(&search);
         let query = format!("%{}%", query);

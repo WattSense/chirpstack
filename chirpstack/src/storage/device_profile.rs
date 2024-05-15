@@ -10,7 +10,6 @@ use uuid::Uuid;
 
 use lrwn::region::{CommonName, MacVersion, Revision};
 
-use super::db_adapter::Uuid as UuidNT;
 use super::error::Error;
 use super::schema::device_profile;
 use super::{error, fields, get_db_conn};
@@ -21,8 +20,8 @@ use chirpstack_api::internal;
 #[derive(Clone, Queryable, Insertable, Debug, PartialEq, Eq)]
 #[diesel(table_name = device_profile)]
 pub struct DeviceProfile {
-    pub id: UuidNT,
-    pub tenant_id: UuidNT,
+    pub id: fields::Uuid,
+    pub tenant_id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -180,7 +179,7 @@ impl DeviceProfile {
 
 #[derive(Queryable, PartialEq, Eq, Debug)]
 pub struct DeviceProfileListItem {
-    pub id: UuidNT,
+    pub id: fields::Uuid,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub name: String,
@@ -216,7 +215,7 @@ pub async fn create(dp: DeviceProfile) -> Result<DeviceProfile, Error> {
 
 pub async fn get(id: &Uuid) -> Result<DeviceProfile, Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<DeviceProfile, Error> {
             let mut c = get_db_conn()?;
             let dp = device_profile::dsl::device_profile
@@ -314,7 +313,7 @@ pub async fn set_measurements(id: Uuid, m: &fields::Measurements) -> Result<Devi
         let m = m.clone();
         move || -> Result<DeviceProfile, Error> {
             let mut c = get_db_conn()?;
-            diesel::update(device_profile::dsl::device_profile.find(UuidNT::from(id)))
+            diesel::update(device_profile::dsl::device_profile.find(fields::Uuid::from(id)))
                 .set(device_profile::measurements.eq(m))
                 .get_result(&mut c)
                 .map_err(|e| Error::from_diesel(e, id.to_string()))
@@ -327,7 +326,7 @@ pub async fn set_measurements(id: Uuid, m: &fields::Measurements) -> Result<Devi
 
 pub async fn delete(id: &Uuid) -> Result<(), Error> {
     task::spawn_blocking({
-        let id = UuidNT::from(id);
+        let id = fields::Uuid::from(id);
         move || -> Result<(), Error> {
             let mut c = get_db_conn()?;
             let ra =
@@ -353,7 +352,7 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(device_profile::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
+                q = q.filter(device_profile::dsl::tenant_id.eq(fields::Uuid::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
@@ -398,7 +397,7 @@ pub async fn list(
                 .into_boxed();
 
             if let Some(tenant_id) = &filters.tenant_id {
-                q = q.filter(device_profile::dsl::tenant_id.eq(UuidNT::from(tenant_id)));
+                q = q.filter(device_profile::dsl::tenant_id.eq(fields::Uuid::from(tenant_id)));
             }
 
             if let Some(search) = &filters.search {
