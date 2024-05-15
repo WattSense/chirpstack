@@ -17,7 +17,6 @@ use uuid::Uuid;
 
 use lrwn::{DevAddr, EUI64};
 
-use super::db_adapter::{DbTimestamptz, DbUuid};
 use super::schema::{application, device, device_profile, multicast_group_device, tenant};
 use super::{error::Error, fields, get_db_conn};
 use crate::config;
@@ -537,7 +536,7 @@ pub async fn get_active_inactive(tenant_id: &Option<Uuid>) -> Result<DevicesActi
                 from
                     device_active_inactive
             "#)
-            .bind::<diesel::sql_types::Nullable<DbUuid>, _>(tenant_id)
+            .bind::<diesel::sql_types::Nullable<fields::sql_types::Uuid>, _>(tenant_id)
             .get_result(&mut c)
             .map_err(|e| Error::from_diesel(e, "".into()))
         }
@@ -659,8 +658,8 @@ pub async fn get_with_class_b_c_queue_items(limit: usize) -> Result<Vec<Device>>
                 "#
             })
             .bind::<diesel::sql_types::Integer, _>(limit as i32)
-            .bind::<DbTimestamptz, _>(Utc::now())
-            .bind::<DbTimestamptz, _>(
+            .bind::<fields::sql_types::Timestamptz, _>(Utc::now())
+            .bind::<fields::sql_types::Timestamptz, _>(
                 Utc::now() + Duration::from_std(2 * conf.network.scheduler.interval).unwrap(),
             )
             .load(c)

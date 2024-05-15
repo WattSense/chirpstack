@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::fmt;
 use std::str::FromStr;
 
-use super::db_adapter::{DbJsonT, DbUuid};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use diesel::backend::Backend;
@@ -150,7 +149,7 @@ impl serialize::ToSql<Text, Sqlite> for IntegrationKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, AsExpression, FromSqlRow, Serialize, Deserialize)]
-#[diesel(sql_type = DbJsonT)]
+#[diesel(sql_type = fields::sql_types::JsonT)]
 pub enum IntegrationConfiguration {
     None,
     Http(HttpConfiguration),
@@ -641,7 +640,7 @@ pub async fn get_measurement_keys(application_id: &Uuid) -> Result<Vec<String>, 
                         key
                     "#,
             )
-            .bind::<DbUuid, _>(application_id)
+            .bind::<fields::sql_types::Uuid, _>(application_id)
             .load(&mut c)
             .map_err(|e| Error::from_diesel(e, application_id.to_string()))?;
             Ok(keys.iter().map(|k| k.key.clone()).collect())
@@ -668,7 +667,7 @@ pub async fn get_measurement_keys(application_id: &Uuid) -> Result<Vec<String>, 
                         key
                     "#,
             )
-            .bind::<DbUuid, _>(application_id)
+            .bind::<fields::sql_types::Uuid, _>(application_id)
             .load(&mut c)
             .map_err(|e| Error::from_diesel(e, application_id.to_string()))?;
             Ok(keys.iter().map(|k| k.key.clone()).collect())
