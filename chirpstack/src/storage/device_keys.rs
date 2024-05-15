@@ -6,10 +6,9 @@ use tracing::info;
 
 use lrwn::{AES128Key, EUI64};
 
-use super::db_adapter::DevNonces;
 use super::error::Error;
-use super::get_db_conn;
 use super::schema::device_keys;
+use super::{fields, get_db_conn};
 
 #[derive(Queryable, Insertable, AsChangeset, PartialEq, Eq, Debug, Clone)]
 #[diesel(table_name = device_keys)]
@@ -19,7 +18,7 @@ pub struct DeviceKeys {
     pub updated_at: DateTime<Utc>,
     pub nwk_key: AES128Key,
     pub app_key: AES128Key,
-    pub dev_nonces: DevNonces,
+    pub dev_nonces: fields::DevNonces,
     pub join_nonce: i32,
 }
 
@@ -124,7 +123,7 @@ pub async fn set_dev_nonces(dev_eui: &EUI64, nonces: &[i32]) -> Result<DeviceKey
         move || -> Result<DeviceKeys, Error> {
             let mut c = get_db_conn()?;
             diesel::update(device_keys::dsl::device_keys.find(&dev_eui))
-                .set(device_keys::dev_nonces.eq(DevNonces::from(nonces)))
+                .set(device_keys::dev_nonces.eq(fields::DevNonces::from(nonces)))
                 .get_result(&mut c)
                 .map_err(|e| Error::from_diesel(e, dev_eui.to_string()))
         }
@@ -188,7 +187,7 @@ pub mod test {
                 let mut c = get_db_conn()?;
                 diesel::update(device_keys::dsl::device_keys.find(&dev_eui))
                     .set((
-                        device_keys::dev_nonces.eq::<DevNonces>(Vec::new().into()),
+                        device_keys::dev_nonces.eq::<fields::DevNonces>(Vec::new().into()),
                         device_keys::join_nonce.eq(0),
                     ))
                     .get_result(&mut c)
