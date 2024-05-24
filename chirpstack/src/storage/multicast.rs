@@ -338,7 +338,8 @@ pub async fn add_gateway(group_id: &Uuid, gateway_id: &EUI64) -> Result<(), Erro
 
                 let _ = diesel::insert_into(multicast_group_gateway::table)
                     .values((
-                        multicast_group_gateway::multicast_group_id.eq(&group_id),
+                        multicast_group_gateway::multicast_group_id
+                            .eq(fields::Uuid::from(group_id)),
                         multicast_group_gateway::gateway_id.eq(&gateway_id),
                         multicast_group_gateway::created_at.eq(Utc::now()),
                     ))
