@@ -324,7 +324,6 @@ pub async fn get_for_phypayload_and_incr_f_cnt_up(
                             .or(device::dsl::secondary_dev_addr.eq(&dev_addr)),
                     )
                     .filter(device::dsl::is_disabled.eq(false))
-                    .for_update()
                     .load(c)
                     .await?;
 
