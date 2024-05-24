@@ -9,7 +9,6 @@ use uuid::Uuid;
 
 use lrwn::EUI64;
 
-use super::db_adapter::Uuid as fields::Uuid;
 use super::schema::{gateway, multicast_group_gateway, tenant};
 use super::{error::Error, fields, get_async_db_conn};
 
@@ -235,7 +234,8 @@ pub async fn get_count(filters: &Filters) -> Result<i64, Error> {
 
     if let Some(multicast_group_id) = &filters.multicast_group_id {
         q = q.filter(
-            multicast_group_gateway::dsl::multicast_group_id.eq(fields::Uuid::from(multicast_group_id)),
+            multicast_group_gateway::dsl::multicast_group_id
+                .eq(fields::Uuid::from(multicast_group_id)),
         );
     }
 
@@ -294,7 +294,8 @@ pub async fn list(
 
     if let Some(multicast_group_id) = &filters.multicast_group_id {
         q = q.filter(
-            multicast_group_gateway::dsl::multicast_group_id.eq(fields::Uuid::from(multicast_group_id)),
+            multicast_group_gateway::dsl::multicast_group_id
+                .eq(fields::Uuid::from(multicast_group_id)),
         );
     }
 
