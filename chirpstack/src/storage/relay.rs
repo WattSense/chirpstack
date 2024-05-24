@@ -1,7 +1,7 @@
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use diesel::{dsl, prelude::*};
-use diesel_async::RunQueryDsl;
+use diesel_async::{AsyncConnection, RunQueryDsl};
 use tracing::info;
 use uuid::Uuid;
 
@@ -128,8 +128,7 @@ pub async fn list_devices(
 
 pub async fn add_device(relay_dev_eui: EUI64, device_dev_eui: EUI64) -> Result<(), Error> {
     let mut c = get_async_db_conn().await?;
-    c.build_transaction()
-        .run::<(), Error, _>(|c| {
+    c.transaction::<(), Error, _>(|c| {
             Box::pin(async move {
                 // We lock the relay device to avoid race-conditions in the validation.
                 let rd: Device = device::dsl::device
